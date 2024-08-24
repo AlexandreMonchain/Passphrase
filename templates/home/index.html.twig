@@ -1,0 +1,242 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Générateur de mots de passe{% endblock %}
+
+{% block body %}
+    <div class="container d-flex flex-column align-items-center justify-content-center min-vh-100">
+
+        <!-- Mots de passe générés -->
+        <div id="generated-passwords" class="col-md-8 mb-3">
+            {% include 'home/_generated_passwords.html.twig' %}
+        </div>
+
+        <!-- Formulaire de génération -->
+        <div class="col-md-8">
+            {{ form_start(form, {'attr': {'id': 'password-generator-form', 'class': 'form-group w-100'}}) }}
+
+            <!-- Bouton de génération -->
+            <div class="mb-3 text-center">
+                {{ form_widget(form.generate, {'attr': {'class': 'btn btn-primary', 'id': 'generate-btn'}}) }}
+            </div>
+
+            <!-- Animation de chargement (hidden by default) -->
+            <div id="loading-animation" class="text-center" style="display:none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+            </div>
+
+            <!-- Formulaire de configuration compact -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Personnalisation du mot de passe</h5>
+                    
+                    <div class="row">
+                        <!-- Nombre de mots, séparateur -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form_label(form.nb_mots) }}
+                                {{ form_widget(form.nb_mots, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.separateur) }}
+                                {{ form_widget(form.separateur, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                        </div>
+
+                        <!-- Longueur des chiffres et caractère spécial -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form_label(form.longueur_nombre) }}
+                                {{ form_widget(form.longueur_nombre, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.caractere_special) }}
+                                {{ form_widget(form.caractere_special, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Majuscules (côté à côte) -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-check mb-3">
+                                {{ form_widget(form.majuscule_debut, {'attr': {'class': 'form-check-input'}}) }}
+                                {{ form_label(form.majuscule_debut, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-check mb-3">
+                                {{ form_widget(form.majuscule_aleatoire, {'attr': {'class': 'form-check-input'}}) }}
+                                {{ form_label(form.majuscule_aleatoire, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Longueur minimale centrée en bas -->
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 text-center">
+                            <div class="mb-3">
+                                {{ form_label(form.longueur_minimale) }}
+                                {{ form_widget(form.longueur_minimale, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+
+        <!-- Légende d'entropie à droite sur desktop et en bas sur mobile -->
+        <div class="entropy-legend card">
+            <div class="card-body">
+                <h4 class="card-title text-center">Légende de l'entropie</h4>
+                <ul>
+                    <li><span class="very-weak"></span> Très faible ( < 80 bits )</li>
+                    <li><span class="weak"></span> Faible ( < 100 bits )</li>
+                    <li><span class="medium"></span> Moyen ( < 110 bits )</li>
+                    <li><span class="good"></span> Bon ( < 120 bits )</li>
+                    <li><span class="strong"></span> Fort ( < 130 bits )</li>
+                    <li><span class="very-strong"></span> Très fort ( ≥ 130 bits )</li>
+                </ul>
+                <!-- Lien vers la page de la CNIL -->
+                <div class="text-center mt-3">
+                    <a href="https://www.cnil.fr/fr/mots-de-passe-une-nouvelle-recommandation-pour-maitriser-sa-securite#:~:text=L%E2%80%99authentification%20par%20mot%20de%20passe%20:%20devinabilit%C3%A9%20ou%20entropie" target="_blank" class="btn btn-outline-info">
+                        Qu'est-ce que l'Entropie ?
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .very-weak {
+        background-color: #4a4a4a; /* Gris très foncé */
+        color: white;
+    }
+
+    .weak {
+        background-color: #e74c3c; /* Rouge vif */
+        color: white;
+    }
+
+    .medium {
+        background-color: #f39c12; /* Orange vif */
+        color: white;
+    }
+
+    .good {
+        background-color: #2ecc71; /* Vert clair */
+        color: white;
+    }
+
+    .strong {
+        background-color: #3498db; /* Bleu vif */
+        color: white;
+    }
+
+    .very-strong {
+        background-color: #9b59b6; /* Violet */
+        color: white;
+    }
+
+    /* Styles pour la légende d'entropie */
+    .entropy-legend {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        margin-top: 20px;
+    }
+
+    /* Légende d'entropie sur desktop (fixée à droite) */
+    @media (min-width: 768px) {
+        .entropy-legend {
+            position: fixed;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 200px;
+        }
+    }
+
+    /* Légende d'entropie en bas sur mobile */
+    @media (max-width: 767px) {
+        .entropy-legend {
+            width: 100%;
+            position: relative;
+            margin-top: 20px;
+        }
+    }
+
+    .entropy-legend ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .entropy-legend li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .entropy-legend span {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block script %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#password-generator-form').on('submit', function (e) {
+                e.preventDefault(); // Empêche le rechargement de la page
+                
+                // Désactiver le bouton et afficher l'animation de chargement
+                $('#generate-btn').prop('disabled', true);
+                $('#loading-animation').show();
+
+                $.ajax({
+                    url: '{{ path('app_home') }}',
+                    method: 'POST',
+                    data: $(this).serialize(), // Récupère les données du formulaire
+                    success: function (response) {
+                        $('#generated-passwords').html(response); // Met à jour la section des mots de passe
+                    },
+                    complete: function() {
+                        // Réactiver le bouton et cacher l'animation après la réponse
+                        $('#generate-btn').prop('disabled', false);
+                        $('#loading-animation').hide();
+                    }
+                });
+            });
+
+            // Fonctionnalité de copie
+            $(document).on('click', '.copy-btn', function(e) {
+                e.preventDefault();
+                var password = $(this).data('password');
+                var tempInput = $('<input>');
+                $('body').append(tempInput);
+                tempInput.val(password).select();
+                document.execCommand('copy');
+                tempInput.remove();
+
+                // Feedback visuel pour informer que le mot de passe a été copié
+                $(this).html('<i class="fas fa-check"></i>'); // Change l'icône temporairement
+                var button = $(this);
+                setTimeout(function() {
+                    button.html('<i class="fas fa-copy"></i>'); // Remet l'icône de copie après 2 secondes
+                }, 2000);
+            });
+        });
+    </script>
+{% endblock %}
+

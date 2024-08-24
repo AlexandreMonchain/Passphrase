@@ -1,0 +1,23 @@
+# Symfony-related
+/var/
+/vendor/
+/public/bundles/
+/node_modules/
+
+# Logs and environment variables
+/.env
+/.env.local
+/.env.*.local
+
+# Miscellaneous
+/.idea
+/.vscode
+/.vs
+/.phpunit.result.cache
+/.php_cs.cache
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
