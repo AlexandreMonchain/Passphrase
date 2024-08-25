@@ -1,3 +1,6 @@
+# Testez moi
+L'application [est disponible ici](https://passphrase.fr). Vous pouvez l'utiliser directement via ce lien ou cloner ce dépôt afin de réutiliser le code ou héberger votre propre instance de ce générateur.
+
 # Générateur de Passphrase complexe en Français
 
 Une application web développée avec Symfony pour générer des mots de passe sécurisés et personnalisables. Cet outil permet aux utilisateurs de définir le nombre de mots, les séparateurs, les caractères spéciaux et la longueur du mot de passe. Il offre également une estimation de l'entropie pour évaluer la sécurité des mots de passe générés.
@@ -21,8 +24,8 @@ Si vous rencontrez des problèmes ou avez des suggestions d'amélioration, n'hé
 
 ## Licence
 
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](./LICENSE) pour plus de détails.
+Ce projet est sous [licence MIT](./LICENSE).
 
 ---
 
-© 2024 Alexandre MONCHAIN.
+Passphrase © 2024 Alexandre MONCHAIN.
