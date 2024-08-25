@@ -1,3 +1,5 @@
+# DISCLAME
+Vous êtes sur la branche de dev, le code pourrait être instable. Assurez vous d'utiliser une Release ou de cloner la branche Main.
 
 # Générateur de Passphrase complexe en Français
 
