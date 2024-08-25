@@ -5,6 +5,7 @@
 {% block body %}
     <div class="container d-flex flex-column align-items-center justify-content-center min-vh-100">
 
+        <h1>Générateur de Passphrase</h1>
         <!-- Mots de passe générés -->
         <div id="generated-passwords" class="col-md-8 mb-3">
             {% include 'home/_generated_passwords.html.twig' %}
@@ -114,55 +115,3 @@
 
     </div>
 {% endblock %}
-
-{% block styles %}
-
-{% endblock %}
-
-{% block script %}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#password-generator-form').on('submit', function (e) {
-                e.preventDefault(); // Empêche le rechargement de la page
-                
-                // Désactiver le bouton et afficher l'animation de chargement
-                $('#generate-btn').prop('disabled', true);
-                $('#loading-animation').show();
-
-                $.ajax({
-                    url: '{{ path('app_home') }}',
-                    method: 'POST',
-                    data: $(this).serialize(), // Récupère les données du formulaire
-                    success: function (response) {
-                        $('#generated-passwords').html(response); // Met à jour la section des mots de passe
-                    },
-                    complete: function() {
-                        // Réactiver le bouton et cacher l'animation après la réponse
-                        $('#generate-btn').prop('disabled', false);
-                        $('#loading-animation').hide();
-                    }
-                });
-            });
-
-            // Fonctionnalité de copie
-            $(document).on('click', '.copy-btn', function(e) {
-                e.preventDefault();
-                var password = $(this).data('password');
-                var tempInput = $('<input>');
-                $('body').append(tempInput);
-                tempInput.val(password).select();
-                document.execCommand('copy');
-                tempInput.remove();
-
-                // Feedback visuel pour informer que le mot de passe a été copié
-                $(this).html('<i class="fas fa-check"></i>'); // Change l'icône temporairement
-                var button = $(this);
-                setTimeout(function() {
-                    button.html('<i class="fas fa-copy"></i>'); // Remet l'icône de copie après 2 secondes
-                }, 2000);
-            });
-        });
-    </script>
-{% endblock %}
-

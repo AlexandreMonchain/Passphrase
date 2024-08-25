@@ -1,0 +1,91 @@
+/****************************************** AFFICHAGE DU TABLEAU DE MDP ***************************************/
+/* Empêcher le débordement du texte */
+.list-group-item span {
+    word-wrap: break-word; /* Pour les longs mots */
+    word-break: break-all; /* Pour les très longues chaînes sans espaces */
+    overflow-wrap: break-word;
+}
+
+/* Limiter la largeur des éléments si nécessaire */
+.list-group-item {
+    max-width: 100%; /* S'assure que la case ne dépasse pas les 100% de la largeur parent */
+}
+
+/* Ajuster le style des badges pour qu'ils ne débordent pas */
+.badge {
+    white-space: normal; /* Permettre aux badges de prendre plusieurs lignes si nécessaire */
+}
+
+/***************************************** Légende d'entropie sur desktop (fixée à droite) **********************************/
+/* Affichage légende Entropie */
+.very-weak {
+    background-color: #4a4a4a; /* Gris très foncé pour très faible */
+    color: white;
+}
+
+.weak {
+    background-color: #e74c3c; /* Rouge vif pour faible */
+    color: white;
+}
+
+.medium {
+    background-color: #f1c40f; /* Jaune saturé pour moyen */
+    color: white;
+}
+
+.good {
+    background-color: #2980b9; /* Bleu foncé pour bon */
+    color: white;
+}
+
+.strong {
+    background-color: #2ecc71; /* Vert clair pour fort */
+    color: white;
+}
+
+.very-strong {
+    background-color: #1e8449; /* Vert foncé pour très fort */
+    color: white;
+}
+
+.entropy-legend {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+@media (min-width: 1000px) {
+    .entropy-legend {
+        position: fixed;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 200px;
+    }
+}
+
+/* Légende d'entropie en bas sur mobile */
+@media (max-width: 1000px) {
+    .entropy-legend {
+        width: 100%;
+        position: relative;
+        margin-top: 20px;
+    }
+}
+
+.entropy-legend ul {
+    list-style: none;
+    padding: 0;
+}
+
+.entropy-legend li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.entropy-legend span {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
