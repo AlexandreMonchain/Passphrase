@@ -1,6 +1,3 @@
-# DISCLAME
-Vous êtes sur la branche de dev, le code pourrait être instable. Assurez vous d'utiliser une Release ou de cloner la branche Main.
-
 # Générateur de Passphrase complexe en Français
 
 Une application web développée avec Symfony pour générer des mots de passe sécurisés et personnalisables. Cet outil permet aux utilisateurs de définir le nombre de mots, les séparateurs, les caractères spéciaux et la longueur du mot de passe. Il offre également une estimation de l'entropie pour évaluer la sécurité des mots de passe générés.
