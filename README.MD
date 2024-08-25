@@ -1,5 +1,5 @@
 
-# Générateur de Passphrase complexe et en Fraçais
+# Générateur de Passphrase complexe en Français
 
 Une application web développée avec Symfony pour générer des mots de passe sécurisés et personnalisables. Cet outil permet aux utilisateurs de définir le nombre de mots, les séparateurs, les caractères spéciaux et la longueur du mot de passe. Il offre également une estimation de l'entropie pour évaluer la sécurité des mots de passe générés.
 
@@ -10,6 +10,10 @@ Une application web développée avec Symfony pour générer des mots de passe s
 - Calcul de l'entropie avec un retour visuel sur la force du mot de passe.
 - Design responsive avec Bootstrap.
 - Soumission du formulaire en AJAX pour générer des mots de passe en temps réel sans recharger la page.
+
+## Mise en route
+
+Clonez le dépôt, installez les vendors avec Composer et generez un .env
 
 
 ## Contribuer

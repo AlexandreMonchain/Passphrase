@@ -15,12 +15,12 @@
         {
             $this->cache = $cache;
             // Chemin vers le fichier CSV
-            $this->csvPath = $projectDir . '/src/data/db.csv';
+            $this->csvPath = $projectDir . '/src/Data/db.csv';
         }
 
         public function getCsvData(): array
         {
-            // Utiliser le cache pour éviter de lire le fichier à chaque fois
+            // Utiliser le cache pour ï¿½viter de lire le fichier ï¿½ chaque fois
             return $this->cache->get('csv_data', function (ItemInterface $item) {
                 // Charger le fichier CSV ici
                 $item->expiresAfter(3600); // 1 heure d'expiration du cache

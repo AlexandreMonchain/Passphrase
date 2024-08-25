@@ -40,6 +40,18 @@
             "./tests/bootstrap.php"
         ]
     },
+    "symfony/apache-pack": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "1.0",
+            "ref": "0f18b4decdf5695d692c1d0dfd65516a07a6adf1"
+        },
+        "files": [
+            "./public/.htaccess"
+        ]
+    },
     "symfony/asset-mapper": {
         "version": "7.0",
         "recipe": {
@@ -108,18 +120,6 @@
             "./public/index.php",
             "./src/Controller/.gitignore",
             "./src/Kernel.php"
-        ]
-    },
-    "symfony/lock": {
-        "version": "7.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "5.2",
-            "ref": "8e937ff2b4735d110af1770f242c1107fdab4c8e"
-        },
-        "files": [
-            "./config/packages/lock.yaml"
         ]
     },
     "symfony/mailer": {
