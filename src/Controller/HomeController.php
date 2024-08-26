@@ -20,13 +20,13 @@ class HomeController extends AbstractController
         $form = $this->createFormBuilder()
             ->add('nb_mots', ChoiceType::class, [
                 'label' => 'Nombre de mots dans le mot de passe',
-                'choices' => [
-                    '1 mot' => 1,
+                'choices' => [                    
                     '2 mots' => 2,
                     '3 mots' => 3,
                     '4 mots' => 4,
                     '5 mots' => 5,
                     '6 mots' => 6,
+                    '7 mots' => 7,
                 ],
                 'data' => 2,
             ])
