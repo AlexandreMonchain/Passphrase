@@ -9,7 +9,7 @@
 /.env.local
 /.env.*.local
 /.htaccess
-/.TODO
+TODO
 
 # Miscellaneous
 /.idea
