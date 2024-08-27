@@ -1,6 +1,0 @@
-- Ajouter une API pour get des mdp. API configurable
-- Intégrer le script https://github.com/bjeavons/zxcvbn-php pour arrêter de parler en entropie.
-- Adapter le générateur à l'anglais. Avec cette Worldlist ? https://github.com/mike-hearn/useapassphrase/blob/master/js/wordlist.js
-- https://pagespeed.web.dev/analysis/https-passphrase-fr/tkdcynazgm?hl=fr&form_factor=desktop
-- Intégrer le nombre de possibilité pour trouver ce mdp (par rapport au confiugrateur)
-dd
