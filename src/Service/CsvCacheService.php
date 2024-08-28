@@ -20,7 +20,7 @@
 
         public function getCsvData(): array
         {
-            // Utiliser le cache pour �viter de lire le fichier � chaque fois
+            // Utiliser le cache pour éviter de lire le fichier à chaque fois
             return $this->cache->get('csv_data', function (ItemInterface $item) {
                 // Charger le fichier CSV ici
                 $item->expiresAfter(3600); // 1 heure d'expiration du cache
