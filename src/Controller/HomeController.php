@@ -199,7 +199,9 @@ class HomeController extends AbstractController
         $has_special_chars = false;
 
         // Combinaison des caractères spéciaux et séparateurs dans une seule expression régulière
-        $special_chars_and_separators_pattern = '/[\$\*\!\:\;\,\?\#\-_\ \*\/\+]/';
+        $special_chars_pattern = '/[\$\*\!\:\;\,\?\#]/';
+        $separators_pattern = '/[\-_ \*\/\+]/';
+
 
         // Vérifier la présence des lettres minuscules
         if (preg_match('/[a-z]/', $password)) {
@@ -213,12 +215,18 @@ class HomeController extends AbstractController
         if (preg_match('/[0-9]/', $password)) {
             $has_digits = true;
         }
-        // Vérifier la présence des caractères spéciaux ou séparateurs
-        if (preg_match($special_chars_and_separators_pattern, $password)) {
+        // Vérifier la présence des caractères spéciaux
+        if (preg_match($special_chars_pattern, $password)) {
             $has_special_chars = true;
         }
 
-                // Calculer la taille de l'ensemble de caractères utilisés
+        // Vérifier la présence des séparateurs
+        if (preg_match($separators_pattern, $password)) {
+            $has_separators = true;
+        }
+
+
+        // Calculer la taille de l'ensemble de caractères utilisés
         if ($has_lowercase) {
             $charset_size += 26; // Lettres minuscules
         }
@@ -228,9 +236,16 @@ class HomeController extends AbstractController
         if ($has_digits) {
             $charset_size += 10; // Chiffres
         }
+        // Si des caractères spéciaux sont présents, ajouter leur taille au charset
         if ($has_special_chars) {
-            $charset_size += 14; // 8 caractères spéciaux + 6 séparateurs
+            $charset_size += 8; // Nombre de caractères spéciaux définis
         }
+
+        // Si des séparateurs sont présents, ajouter leur taille au charset
+        if ($has_separators) {
+            $charset_size += 6; // Nombre de séparateurs définis
+        }
+
 
         // Si aucun ensemble de caractères n'a été détecté, renvoyer 0
         if ($charset_size == 0) {
