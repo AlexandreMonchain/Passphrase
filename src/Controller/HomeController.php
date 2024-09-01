@@ -100,7 +100,18 @@ class HomeController extends AbstractController
         $passwordsWithEntropy = [];
 
         // Logique pour générer des mots de passe si le formulaire n'a pas encore été soumis
-       if ($form->isSubmitted() && $form->isValid()) {
+        if (!$form->isSubmitted()) {
+            $data = [
+                'nb_mots' => 2,
+                'separateur' => 'random',
+                'majuscule_debut' => true,
+                'majuscule_aleatoire' => false,
+                'longueur_nombre' => 2,
+                'caractere_special' => 'random',
+                'longueur_minimale' => 12,
+            ];
+            $passwordsWithEntropy = $this->generatePasswordsWithEntropy($data, $mots);
+        } elseif ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $passwordsWithEntropy = $this->generatePasswordsWithEntropy($data, $mots);
         }
