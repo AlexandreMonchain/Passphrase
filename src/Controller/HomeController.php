@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Controller;
 
 use App\Service\CsvCacheService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,11 +18,29 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(Request $request, CsvCacheService $csvCacheService): Response
     {
-        // Créer le formulaire de personnalisation avec des valeurs par défaut
-        $form = $this->createFormBuilder()
+        // Récupérer les préférences utilisateur depuis le cookie
+        $userPreferencesCookie = $request->cookies->get('user_preferences');
+        if ($userPreferencesCookie) {
+            // Si le cookie existe, on le décode pour obtenir les préférences
+            $userPreferences = json_decode($userPreferencesCookie, true);
+        } else {
+            // Valeurs par défaut si aucun cookie n'est présent
+            $userPreferences = [
+                'nb_mots' => 2,
+                'separateur' => 'random',
+                'majuscule_debut' => true,
+                'majuscule_aleatoire' => false,
+                'longueur_nombre' => 2,
+                'caractere_special' => 'random',
+                'longueur_minimale' => 12,
+            ];
+        }
+
+        // Créer le formulaire avec les valeurs par défaut ou celles du cookie
+        $form = $this->createFormBuilder($userPreferences)
             ->add('nb_mots', ChoiceType::class, [
                 'label' => 'Nombre de mots dans le mot de passe',
-                'choices' => [                    
+                'choices' => [
                     '2 mots' => 2,
                     '3 mots' => 3,
                     '4 mots' => 4,
@@ -28,12 +48,12 @@ class HomeController extends AbstractController
                     '6 mots' => 6,
                     '7 mots' => 7,
                 ],
-                'data' => 2,
+                'data' => $userPreferences['nb_mots'],
             ])
             ->add('longueur_minimale', IntegerType::class, [
                 'label' => 'Longueur minimale du mot de passe',
                 'attr' => ['min' => 8, 'max' => 50],
-                'data' => 12,
+                'data' => $userPreferences['longueur_minimale'],
             ])
             ->add('separateur', ChoiceType::class, [
                 'label' => 'Séparateur entre les mots',
@@ -46,16 +66,17 @@ class HomeController extends AbstractController
                     'Slash (/)' => '/',
                     'Plus (+)' => '+',
                 ],
-                'data' => 'random',
+                'data' => $userPreferences['separateur'],
             ])
             ->add('majuscule_debut', CheckboxType::class, [
                 'label' => 'Majuscule au début de chaque mot',
                 'required' => false,
-                'data' => true,
+                'data' => $userPreferences['majuscule_debut'],
             ])
             ->add('majuscule_aleatoire', CheckboxType::class, [
                 'label' => 'Majuscule à un endroit aléatoire dans chaque mot',
                 'required' => false,
+                'data' => $userPreferences['majuscule_aleatoire'],
             ])
             ->add('longueur_nombre', ChoiceType::class, [
                 'label' => 'Nombre de chiffres à la fin du mot de passe',
@@ -65,9 +86,9 @@ class HomeController extends AbstractController
                     '2 chiffres' => 2,
                     '3 chiffres' => 3,
                     '4 chiffres' => 4,
-                    '5 chiffres' => 5,                    
+                    '5 chiffres' => 5,
                 ],
-                'data' => 2,
+                'data' => $userPreferences['longueur_nombre'],
             ])
             ->add('caractere_special', ChoiceType::class, [
                 'label' => 'Caractère spécial à la fin',
@@ -82,11 +103,11 @@ class HomeController extends AbstractController
                     'Plus (+)' => '+',
                     'Arobase (@)' => '@',
                     'Virgule (,)' => ',',
-                    'Point virugule (;)' => ';',
+                    'Point virgule (;)' => ';',
                     'Deux Points (:)' => ':',
                     'Etoile (*)' => '*',
                 ],
-                'data' => 'random',
+                'data' => $userPreferences['caractere_special'],
             ])
             ->add('generate', SubmitType::class, ['label' => 'Générer les mots de passe'])
             ->getForm();
@@ -99,29 +120,46 @@ class HomeController extends AbstractController
         // Tableau des mots de passe générés avec entropie
         $passwordsWithEntropy = [];
 
-        // Logique pour générer des mots de passe si le formulaire n'a pas encore été soumis
-        if (!$form->isSubmitted()) {
-            $data = [
-                'nb_mots' => 2,
-                'separateur' => 'random',
-                'majuscule_debut' => true,
-                'majuscule_aleatoire' => false,
-                'longueur_nombre' => 2,
-                'caractere_special' => 'random',
-                'longueur_minimale' => 12,
-            ];
-            $passwordsWithEntropy = $this->generatePasswordsWithEntropy($data, $mots);
-        } elseif ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
+            // Générer les mots de passe avec les nouvelles données du formulaire
             $passwordsWithEntropy = $this->generatePasswordsWithEntropy($data, $mots);
-        }
 
-        if ($request->isXmlHttpRequest()) {
-            return $this->render('home/_generated_passwords.html.twig', [
+            // Créer un cookie pour sauvegarder les préférences utilisateur
+            $cookie = new Cookie(
+                'user_preferences',
+                json_encode($data),
+                time() + (3600 * 24 * 30),  // Expiration dans 30 jours
+                '/',                        // Path
+                null,                       // Domaine
+                true,                       // Sécurisé
+                true,                       // HTTPOnly
+                false,                      // Raw
+                Cookie::SAMESITE_LAX        // SameSite policy
+            );
+
+            // Créer la réponse et y ajouter le cookie
+            $response = new Response();
+            $response->headers->setCookie($cookie);
+
+            // Si c'est une requête AJAX, renvoyer une réponse partielle
+            if ($request->isXmlHttpRequest()) {
+                return $this->render('home/_generated_passwords.html.twig', [
+                    'generated_passwords' => $passwordsWithEntropy,
+                ], $response);
+            }
+
+            // Sinon, rendre la page avec le cookie ajouté
+            return $this->render('home/index.html.twig', [
+                'form' => $form->createView(),
                 'generated_passwords' => $passwordsWithEntropy,
-            ]);
+            ], $response);
         }
 
+        // Si le formulaire n'est pas soumis, générer les mots de passe par défaut
+        $passwordsWithEntropy = $this->generatePasswordsWithEntropy($userPreferences, $mots);
+
+        // Rendre la vue initiale avec les mots de passe par défaut
         return $this->render('home/index.html.twig', [
             'form' => $form->createView(),
             'generated_passwords' => $passwordsWithEntropy,
