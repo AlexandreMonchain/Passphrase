@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class HomeController extends AbstractController
 {
@@ -36,7 +37,7 @@ class HomeController extends AbstractController
             ];
         }
 
-        // Créer le formulaire avec les valeurs par défaut ou celles du cookie
+        // Créer le formulaire avec des contraintes de validation
         $form = $this->createFormBuilder($userPreferences)
             ->add('nb_mots', ChoiceType::class, [
                 'label' => 'Nombre de mots dans le mot de passe',
@@ -49,12 +50,29 @@ class HomeController extends AbstractController
                     '7 mots' => 7,
                 ],
                 'data' => $userPreferences['nb_mots'],
+                'constraints' => [
+                    new Assert\Choice([
+                        'choices' => [2, 3, 4, 5, 6, 7],
+                        'message' => 'Le nombre de mots sélectionné est invalide.',
+                    ]),
+                ],
             ])
             ->add('longueur_minimale', IntegerType::class, [
                 'label' => 'Longueur minimale du mot de passe',
                 'attr' => ['min' => 8, 'max' => 50],
                 'data' => $userPreferences['longueur_minimale'],
-            ])
+                'constraints' => [
+                    new Assert\Range([
+                        'min' => 8,
+                        'max' => 50,
+                        'notInRangeMessage' => 'La longueur minimale doit être comprise entre {{ min }} et {{ max }} caractères.',
+                    ]),
+                    new Assert\Type([
+                        'type' => 'integer',
+                        'message' => 'La longueur minimale doit être un nombre entier.',
+                    ]),
+                ],
+            ])            
             ->add('separateur', ChoiceType::class, [
                 'label' => 'Séparateur entre les mots',
                 'choices' => [
@@ -67,16 +85,34 @@ class HomeController extends AbstractController
                     'Plus (+)' => '+',
                 ],
                 'data' => $userPreferences['separateur'],
+                'constraints' => [
+                    new Assert\Choice([
+                        'choices' => ['random', '-', '_', ' ', '*', '/', '+'],
+                        'message' => 'Sélectionnez un séparateur valide.',
+                    ]),
+                ],
             ])
             ->add('majuscule_debut', CheckboxType::class, [
                 'label' => 'Majuscule au début de chaque mot',
                 'required' => false,
                 'data' => $userPreferences['majuscule_debut'],
+                'constraints' => [
+                    new Assert\Type([
+                        'type' => 'bool',
+                        'message' => 'La valeur de majuscule au début doit être un booléen.',
+                    ]),
+                ],
             ])
             ->add('majuscule_aleatoire', CheckboxType::class, [
                 'label' => 'Majuscule à un endroit aléatoire dans chaque mot',
                 'required' => false,
                 'data' => $userPreferences['majuscule_aleatoire'],
+                'constraints' => [
+                    new Assert\Type([
+                        'type' => 'bool',
+                        'message' => 'La valeur de majuscule aléatoire doit être un booléen.',
+                    ]),
+                ],
             ])
             ->add('longueur_nombre', ChoiceType::class, [
                 'label' => 'Nombre de chiffres à la fin du mot de passe',
@@ -89,6 +125,12 @@ class HomeController extends AbstractController
                     '5 chiffres' => 5,
                 ],
                 'data' => $userPreferences['longueur_nombre'],
+                'constraints' => [
+                    new Assert\Choice([
+                        'choices' => [0, 1, 2, 3, 4, 5],
+                        'message' => 'Le nombre de chiffres est invalide.',
+                    ]),
+                ],
             ])
             ->add('caractere_special', ChoiceType::class, [
                 'label' => 'Caractère spécial à la fin',
@@ -108,6 +150,12 @@ class HomeController extends AbstractController
                     'Etoile (*)' => '*',
                 ],
                 'data' => $userPreferences['caractere_special'],
+                'constraints' => [
+                    new Assert\Choice([
+                        'choices' => ['random', 'none', '$', '!', '#', '?', '-', '+', '@', ',', ';', ':', '*'],
+                        'message' => 'Sélectionnez un caractère spécial valide.',
+                    ]),
+                ],
             ])
             ->add('generate', SubmitType::class, ['label' => 'Générer les mots de passe'])
             ->getForm();
@@ -263,7 +311,6 @@ class HomeController extends AbstractController
             $has_separators = true;
         }
 
-
         // Calculer la taille de l'ensemble de caractères utilisés
         if ($has_lowercase) {
             $charset_size += 26; // Lettres minuscules
@@ -284,7 +331,6 @@ class HomeController extends AbstractController
             $charset_size += 6; // Nombre de séparateurs définis
         }
 
-
         // Si aucun ensemble de caractères n'a été détecté, renvoyer 0
         if ($charset_size == 0) {
             return 0;
@@ -298,21 +344,20 @@ class HomeController extends AbstractController
 
     // Fonction pour renvoyer la classe Bootstrap en fonction de l'entropie
     public function getBootstrapEntropyClass(float $entropy): string
-{
-    if ($entropy < 80) {
-        return 'very-weak'; // Très faible (gris foncé)
-    } elseif ($entropy < 100) {
-        return 'weak'; // Faible (rouge vif)
-    } elseif ($entropy < 110) {
-        return 'medium'; // Moyen (orange vif)
-    } elseif ($entropy < 120) {
-        return 'good'; // Bon (vert clair)
-    } elseif ($entropy < 130) {
-        return 'strong'; // Fort (bleu vif)
-    } else {
-        return 'very-strong'; // Très fort (violet)
+    {
+        if ($entropy < 80) {
+            return 'very-weak'; // Très faible (gris foncé)
+        } elseif ($entropy < 100) {
+            return 'weak'; // Faible (rouge vif)
+        } elseif ($entropy < 110) {
+            return 'medium'; // Moyen (orange vif)
+        } elseif ($entropy < 120) {
+            return 'good'; // Bon (vert clair)
+        } elseif ($entropy < 130) {
+            return 'strong'; // Fort (bleu vif)
+        } else {
+            return 'very-strong'; // Très fort (violet)
+        }
     }
-}
-
 }
 ?>
