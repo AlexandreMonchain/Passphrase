@@ -86,9 +86,16 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Bouton pour charger les valeurs par défaut -->
+                    <div class="col-md-6 text-left">
+                        <button type="button" id="load-defaults-btn" class="btn btn-light btn-sm">
+                            <i class="fas fa-sync-alt"></i> <!-- icone recharger -->
+                            Reset
+                        </button>
+                    </div>
                 </div>
             </div>
-
             {{ form_end(form) }}
         </div>
 
@@ -112,6 +119,5 @@
                 </div>
             </div>
         </div>
-
     </div>
 {% endblock %}

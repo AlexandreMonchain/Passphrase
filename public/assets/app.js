@@ -39,3 +39,28 @@ $(document).ready(function () {
         }, 2000);
     });
 });    
+
+//Bouton pour remettre les paramètres par defaut du formulaire
+document.addEventListener('DOMContentLoaded', function () {
+    const loadDefaultsBtn = document.getElementById('load-defaults-btn');
+
+    loadDefaultsBtn.addEventListener('click', function () {
+        const defaultValues = {
+            'nb_mots': 2,
+            'longueur_minimale': 12,
+            'separateur': 'random',
+            'majuscule_debut': true,
+            'majuscule_aleatoire': false,
+            'longueur_nombre': 2,
+            'caractere_special': 'random'
+        };
+        // Modifier les champs du formulaire avec les valeurs par défaut
+        document.getElementById('password_generation_form_nb_mots').value = defaultValues['nb_mots'];
+        document.getElementById('password_generation_form_longueur_minimale').value = defaultValues['longueur_minimale'];
+        document.getElementById('password_generation_form_separateur').value = defaultValues['separateur'];
+        document.getElementById('password_generation_form_majuscule_debut').checked = defaultValues['majuscule_debut'];
+        document.getElementById('password_generation_form_majuscule_aleatoire').checked = defaultValues['majuscule_aleatoire'];
+        document.getElementById('password_generation_form_longueur_nombre').value = defaultValues['longueur_nombre'];
+        document.getElementById('password_generation_form_caractere_special').value = defaultValues['caractere_special'];
+    });
+});
