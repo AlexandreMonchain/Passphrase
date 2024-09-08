@@ -89,3 +89,9 @@
     height: 20px;
     margin-right: 10px;
 }
+
+/* CSS pour afficher le menu déroulant au survol */
+.nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0; /* Pour supprimer l'animation de décalage */
+}
