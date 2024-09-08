@@ -26,6 +26,7 @@ class HomeController extends AbstractController
         if ($userPreferencesCookie) {
             $userPreferences = json_decode($userPreferencesCookie, true);
         } else {
+            // Valeur par defaut si pas de cookie
             $userPreferences = [
                 'nb_mots' => 2,
                 'separateur' => 'random',
@@ -37,7 +38,7 @@ class HomeController extends AbstractController
             ];
         }
 
-        // Utiliser le FormType dédié pour créer le formulaire
+        // Appel du formulaire dans src\Form et passage du tableau associatif pour le préremplir
         $form = $this->createForm(PasswordGenerationFormType::class, $userPreferences);
         $form->handleRequest($request);
 
