@@ -36,6 +36,36 @@
         <link defer rel="stylesheet" href="{{ asset('assets/app.css') }}">
     </head>
     <body>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <a class="navbar-brand" href="{{ path('app_home') }}">Passphrase</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
+                        </li>
+                        <!-- Menu déroulant pour le Blog -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBlog" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Blog
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownBlog">
+                                <!-- Liens vers les articles -->
+                                <a class="dropdown-item" href="{{ path('blog_show', { 'slug': 'test' }) }}">Article : Test</a>
+                                <!-- Ajoute ici d'autres articles si nécessaire -->
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+
+        <!-- Contenu principal -->
         {% block body %}{% endblock %}
     </body>
     <footer class="bg-light text-center text-lg-start mt-4">
@@ -56,12 +86,9 @@
             </div>
         </div>
         <link defer rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        <script defer src={{ asset('assets/bootstrap.bundle.min.js') }}></script>
         <script defer src={{ asset('assets/jquery-3.6.0.min.js') }}></script>
         <script defer src={{ asset('assets/app.js') }}></script>
+        <script defer src={{ asset('assets/bootstrap.min.js') }}></script>
         {% block script %}{% endblock %}
     </footer>
-
-
-
 </html>
