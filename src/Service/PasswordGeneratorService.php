@@ -73,7 +73,6 @@ class PasswordGeneratorService
     private function calculateEntropy(string $password): float
 {
     $charset_size = 0;
-    $password = 'Mélodie/Déboussoler18*';
 
     // Vérification des types de caractères présents dans le mot de passe
     $has_lowercase = preg_match('/[a-z]/', $password);
