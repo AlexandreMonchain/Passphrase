@@ -10,6 +10,7 @@
 /.env.*.local
 /.htaccess
 /TODO
+/composer.lock
 
 # Miscellaneous
 /.idea
