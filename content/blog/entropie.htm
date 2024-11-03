@@ -1,0 +1,120 @@
+<h1>Comprendre l'Entropie des Mots de Passe</h1>
+
+<p>
+    Lorsque vous utilisez notre générateur de phrases de passe, vous avez peut-être remarqué un indicateur d’entropie associé à chaque mot de passe. Mais qu’est-ce que l’entropie, et pourquoi est-elle essentielle pour protéger vos comptes en ligne ?
+</p>
+
+<p style="text-align: center;">
+    <img src="/images/blog_entropie.png" width="100%" alt="Image d'illustration">
+</p>
+
+<h2>Qu’est-ce que l’entropie ?</h2>
+
+<p>
+    L’entropie est une mesure qui évalue à quel point un mot de passe est difficile à deviner. En d’autres termes, elle représente le niveau de complexité et d’imprévisibilité de votre mot de passe. Plus l’entropie est élevée, plus votre mot de passe est sécurisé contre les attaques.
+</p>
+
+<h2>Comment l'entropie est-elle calculée ?</h2>
+
+<p>
+    La formule de calcul de l'entropie est la suivante :
+</p>
+
+<p>
+    <strong>Entropie = Nombre de caractères × log₂(taille de l’ensemble de caractères)</strong>
+</p>
+
+<ul>
+    <li><strong>Nombre de caractères</strong> : C'est le nombre total de caractères qui composent le mot de passe.</li>
+    <li><strong>Taille de l’ensemble de caractères</strong> : Cela représente la diversité des caractères utilisés. Plus vous utilisez de types de caractères (minuscules, majuscules, chiffres, symboles), plus l’entropie augmente.</li>
+</ul>
+
+<h3>Exemples de calcul</h3>
+
+<h4>1. Mot de passe avec une diversité maximale :</h4>
+<p>
+    Prenons le mot de passe <strong>9$g3c55r@D}TF%n6Ge{P</strong>. Il utilise des lettres majuscules, des lettres minuscules, des chiffres et des caractères spéciaux, avec une diversité maximale de 94 possibilités (26 minuscules + 26 majuscules + 10 chiffres + 32 symboles).
+</p>
+
+<p>
+    <strong>Calcul de l'entropie</strong> : 
+</p>
+
+<ul>
+    <li>Taille de l’ensemble de caractères = 94</li>
+    <li>Entropie = 20 × log₂(94)</li>
+    <li>log₂(94) ≈ 6.555</li>
+    <li>Entropie = 20 x 6.555 ≈ 131.09</li>
+</ul>
+
+<p>
+    Ce mot de passe est extrêmement sécurisé. Cependant malgré sa complexité il y a peu de chance que vous l'utilisiez si vous devez le taper au quotidien. C'est la raison d'exister de ce site.
+</p>
+
+<h4>2. Phrase de passe generée ici :</h4>
+<br/>
+<p>
+    Considérons <strong>Mélodie/Déboussoler18*</strong> et décomposons le calcul de son entropie :
+</p>
+<ul>
+    <li>Longueur de la passphrase : 22 caractères </li>
+    <li>Taille de l’ensemble de caractères = 26 (minuscules) + 26 (majuscules) + 10 (chiffres) + 8 (caractères spéciaux) + 6 (séparateurs) + 11 (caractères accentués) = 87 possibilités.</li>
+</ul>
+
+<p>
+    <strong>Calcul de l'entropie</strong> :
+</p>
+
+<ul>
+    <li>Entropie = 22 (longueur de la phrase) × log₂(87)</li>
+    <li>log₂(87) ≈ 6.45</li>
+    <li>Entropie = 22 × 6.45 ≈ 141.74</li>
+</ul>
+
+<p>
+    Ce calcul montre que, même avec une longueur de 22 caractères, la diversité des types de caractères augmente l'entropie globale, assurant une meilleure sécurité.
+</p>
+
+<h2>Attention aux modèles de génération</h2>
+<p>
+    Il est essentiel de comprendre que l'utilisation de notre générateur de mots de passe ne garantit pas la sécurité de vos données. Chaque générateur de mots de passe utilise un modèle de génération qui peut potentiellement être exploité par un hacker. Par exemple, si vous utilisez toujours le même modèle pour générer vos mots de passe (2 mots séparés par une * avec 3 chiffres à la fin), un pirate si il parvient à identifier ce modèle, pourrait alors plus facilement pirater vos mots de passe.
+</p>
+
+<h2>Gestionnaires de mots de passe</h2>
+<p>
+    Les gestionnaires de mots de passe sont des outils conçus pour stocker, générer et gérer les mots de passe de manière sécurisée. Ils vous permettent de créer des mots de passe complexes sans avoir à les mémoriser. La plupart des gestionnaires s'installent sur votre téléphone et permettent de saisir vos mots de passe en toute transparence sur tous vos appareils, facilitant ainsi leur utilisation.
+</p>
+<p>
+    Lorsque vous utilisez un gestionnaire de mot de passe, vous n'avez plus qu'un seul mot de passe à retenir, assurez vous qu'il présente un haut niveau d'entropie et qu'il soit mémorisable. Ce site est fait pour ça !
+</p>
+
+<h3>Pour les entreprises</h3>
+<ul>
+    <li><strong>KeePass</strong> :<br>
+        Validé par l'ANSSI, KeePass est l'un des gestionnaires de mots de passe les plus fiables. Il n'est pas sujet aux fuites de données en ligne, car la base de données est stockée sur votre PC. Cependant, son fonctionnement reposant sur un coffre fort local rend sa gestion difficile en entreprise, surtout pour les utilisateurs moins expérimentés. Gros point positif : KeePass est gratuit.
+    </li>
+    <li><strong>Lockpass</strong> :<br>
+        Une alternative validée par l'ANSSI, Lockpass est plus simple à mettre en œuvre et conviviale. Cette solution est payante.
+    </li>
+    <li><strong>Passbolt</strong> :<br>
+        Passbolt est similaire à Lockpass mais bien que cette solution soit Européenne elle n'est pas validé par l'ANSSI. Elle propose une approche différente en matière de chiffrement des mots de passe, ce qui en fait une option intéressante. Assez peu connu, je vous invite à vous renseigner ! 
+    </li>
+</ul>
+
+<h3>Pour les particuliers</h3>
+<ul>
+    <li><strong>Bitwarden</strong> :<br>
+        Selon mon expérience personnelle, Bitwarden est l'un des gestionnaires de mots de passe les plus agréables à utiliser pour les particuliers. Il dispose d'une version gratuite qui conviendra certainement à la majorité. 
+    </li>
+    <li><strong>Proton</strong> :<br>
+        Proton a récemment lancé son propre gestionnaire de mots de passe. Je ne l'ai pas personnellement testé mais la société Proton est bien connue pour ses solutions robustes et respectueuses de la vie privée. Si je devais changer c'est certainement cette solution que j'envisagerais... 
+    </li>
+    <li><strong>KeePass</strong> :<br>
+        KeePass peut également être une alternative pour les particuliers qui ne souhaitent pas que leurs mots de passe soient stockés dans le cloud. Cependant, je déconseille cette option pour les utilisateurs néophytes en raison de la complexité de sa gestion.
+    </li>
+</ul>
+
+<div class="mt-4 p-3 bg-light border rounded">
+    <p class="mb-1"><strong>Auteur :</strong> Alexandre MONHAIN</p>
+    <p class="mb-0"><strong>Date de publication :</strong> 3 novembre 2024</p>
+</div>
