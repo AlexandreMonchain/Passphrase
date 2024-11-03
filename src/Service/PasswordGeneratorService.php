@@ -22,7 +22,7 @@ class PasswordGeneratorService
                         $mot = ucfirst($mot);
                     }
 
-                    if ($data['majuscule_aleatoire']) {
+                    if ($data['majuscule_aleatoire']) { 
                         $pos = random_int(0, strlen($mot) - 1);
                         $mot[$pos] = strtoupper($mot[$pos]);
                     }
@@ -71,31 +71,37 @@ class PasswordGeneratorService
     }
 
     private function calculateEntropy(string $password): float
-    {
-        $charset_size = 0;
+{
+    $charset_size = 0;
+    $password = 'Mélodie/Déboussoler18*';
 
-        // Combinaison des caractères spéciaux et séparateurs
-        $has_lowercase = preg_match('/[a-z]/', $password);
-        $has_uppercase = preg_match('/[A-Z]/', $password);
-        $has_digits = preg_match('/[0-9]/', $password);
-        $has_special_chars = preg_match('/[\$\*\!\:\;\,\?\#]/', $password);
-        $has_separators = preg_match('/[\-_ \*\/\+]/', $password);
+    // Vérification des types de caractères présents dans le mot de passe
+    $has_lowercase = preg_match('/[a-z]/', $password);
+    $has_uppercase = preg_match('/[A-Z]/', $password);
+    $has_digits = preg_match('/[0-9]/', $password);
+    $has_special_chars = preg_match('/[\$\*\!\:\;\,\?\#]/', $password);
+    $has_separators = preg_match('/[\-_ \*\/\+]/', $password);
+    $has_accents = preg_match('/[éèùàçâêëîïô]/i', $password);
 
-        // Calcul de la taille de l'ensemble de caractères
-        $charset_size += $has_lowercase ? 26 : 0;
-        $charset_size += $has_uppercase ? 26 : 0;
-        $charset_size += $has_digits ? 10 : 0;
-        $charset_size += $has_special_chars ? 8 : 0;
-        $charset_size += $has_separators ? 6 : 0;
+    // Calcul de la taille de l'ensemble de caractères
+    $charset_size += $has_lowercase ? 26 : 0;
+    $charset_size += $has_uppercase ? 26 : 0;
+    $charset_size += $has_digits ? 10 : 0;
+    $charset_size += $has_special_chars ? 8 : 0;
+    $charset_size += $has_separators ? 6 : 0;
+    $charset_size += $has_accents ? 11 : 0;
 
-        if ($charset_size == 0) {
-            return 0;
-        }
-
-        $entropy = strlen($password) * log($charset_size, 2);
-
-        return round($entropy, 2);
+    if ($charset_size == 0) {
+        return 0;
     }
+
+    // Utilisation de mb_strlen() pour obtenir la longueur correcte en caractères
+    $length = mb_strlen($password, 'UTF-8');
+    $entropy = $length * log($charset_size, 2);
+
+    return round($entropy, 0);
+}
+    
 
     public function getBootstrapEntropyClass(float $entropy): string
     {
