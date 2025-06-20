@@ -62,5 +62,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('password_generation_form_majuscule_aleatoire').checked = defaultValues['majuscule_aleatoire'];
         document.getElementById('password_generation_form_longueur_nombre').value = defaultValues['longueur_nombre'];
         document.getElementById('password_generation_form_caractere_special').value = defaultValues['caractere_special'];
+        document.getElementById('password_generation_form_caracteres_accentues').checked = true;
     });
 });
