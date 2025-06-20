@@ -27,6 +27,10 @@ class PasswordGeneratorService
                         $mot[$pos] = strtoupper($mot[$pos]);
                     }
 
+                    if (empty($data['caracteres_accentues'])) {
+                        $mot = $this->removeAccents($mot);
+                    }
+
                     $passwordParts[] = $mot;
                 }
 
@@ -51,7 +55,7 @@ class PasswordGeneratorService
 
             if ($withEntropy) {
                 // Calcul de l'entropie du mot de passe
-                $entropy = $this->calculateEntropy($password);
+                $entropy = $this->calculateEntropy($password, !empty($data['caracteres_accentues']));
 
                 // Ajouter le mot de passe et son entropie dans le tableau
                 $passwordsWithEntropy[] = [
@@ -70,7 +74,7 @@ class PasswordGeneratorService
         return $passwordsWithEntropy;
     }
 
-    private function calculateEntropy(string $password): float
+    private function calculateEntropy(string $password, bool $accents = true): float
 {
     $charset_size = 0;
 
@@ -80,7 +84,7 @@ class PasswordGeneratorService
     $has_digits = preg_match('/[0-9]/', $password);
     $has_special_chars = preg_match('/[\$\*\!\:\;\,\?\#]/', $password);
     $has_separators = preg_match('/[\-_ \*\/\+]/', $password);
-    $has_accents = preg_match('/[éèùàçâêëîïô]/i', $password);
+    $has_accents = $accents ? preg_match('/[éèùàçâêëîïô]/i', $password) : 0;
 
     // Calcul de la taille de l'ensemble de caractères
     $charset_size += $has_lowercase ? 26 : 0;
@@ -117,6 +121,17 @@ class PasswordGeneratorService
         } else {
             return 'very-strong';
         }
+    }
+
+    private function removeAccents(string $str): string
+    {
+        // 1. Translittération classique
+        $str = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $str);
+
+        // 2. Suppression des caractères non désirés générés par iconv (apostrophe, backtick, etc.)
+        $str = preg_replace('/[^A-Za-z0-9 _\-*\/+]/', '', $str);
+
+        return $str;
     }
 }
 
