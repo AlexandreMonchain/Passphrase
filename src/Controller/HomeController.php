@@ -35,6 +35,7 @@ class HomeController extends AbstractController
                 'longueur_nombre' => 2,
                 'caractere_special' => 'random',
                 'longueur_minimale' => 12,
+                'caracteres_accentues' => true,
             ];
         }
 

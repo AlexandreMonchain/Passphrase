@@ -128,6 +128,17 @@ class PasswordGenerationFormType extends AbstractType
                     ]),
                 ],
             ])
+            ->add('caracteres_accentues', CheckboxType::class, [
+                'label'    => 'Autoriser les caractères accentués',
+                'required' => false,
+                'data'     => true, // Par défaut, activé
+                'constraints' => [
+                    new Assert\Type([
+                        'type' => 'bool',
+                        'message' => 'La valeur doit être un booléen.',
+                    ]),
+                ],
+            ])
             ->add('generate', SubmitType::class, ['label' => 'Générer les mots de passe']);
     }
 

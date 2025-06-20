@@ -60,29 +60,32 @@
                         </div>
                     </div>
 
-                    <!-- Majuscules (côté à côte) -->
+                    <div class="row justify-content-center">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                {{ form_label(form.longueur_minimale) }}
+                                {{ form_widget(form.longueur_minimale, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-check mb-3">
                                 {{ form_widget(form.majuscule_debut, {'attr': {'class': 'form-check-input'}}) }}
                                 {{ form_label(form.majuscule_debut, null, {'label_attr': {'class': 'form-check-label'}}) }}
                             </div>
                         </div>
-
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-check mb-3">
                                 {{ form_widget(form.majuscule_aleatoire, {'attr': {'class': 'form-check-input'}}) }}
                                 {{ form_label(form.majuscule_aleatoire, null, {'label_attr': {'class': 'form-check-label'}}) }}
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Longueur minimale centrée en bas -->
-                    <div class="row justify-content-center">
-                        <div class="col-md-6 text-center">
-                            <div class="mb-3">
-                                {{ form_label(form.longueur_minimale) }}
-                                {{ form_widget(form.longueur_minimale, {'attr': {'class': 'form-control'}}) }}
+                        <div class="col-md-4">
+                            <div class="form-check mb-3">
+                                {{ form_widget(form.caracteres_accentues, {'attr': {'class': 'form-check-input'}}) }}
+                                {{ form_label(form.caracteres_accentues, null, {'label_attr': {'class': 'form-check-label'}}) }}
                             </div>
                         </div>
                     </div>

@@ -23,6 +23,7 @@ class ApiPasswordController extends AbstractController
         $majusculeAleatoire = $request->query->get('majuscule_aleatoire', false); 
         $longueurNombre = $request->query->get('longueur_nombre', 2); 
         $caractereSpecial = $request->query->get('caractere_special', 'random'); 
+        $caracteresAccentues = $request->query->get('caracteres_accentues', true);
 
         // Le nombre de mots de passe à générer (par défaut : 1)
         $count = $request->query->get('count', 1);
@@ -39,6 +40,7 @@ class ApiPasswordController extends AbstractController
             'majuscule_aleatoire' => filter_var($majusculeAleatoire, FILTER_VALIDATE_BOOLEAN),
             'longueur_nombre' => $longueurNombre,
             'caractere_special' => $caractereSpecial,
+            'caracteres_accentues' => filter_var($caracteresAccentues, FILTER_VALIDATE_BOOLEAN),
         ];
 
         // Utilisation du service pour générer les mots de passe sans entropie
