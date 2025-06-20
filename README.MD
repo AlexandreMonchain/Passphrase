@@ -30,4 +30,4 @@ Ce projet est sous [licence MIT](./LICENSE).
 
 ---
 
-Passphrase © 2024 Alexandre MONCHAIN.
+Passphrase © 2024-2025 Alexandre MONCHAIN.
