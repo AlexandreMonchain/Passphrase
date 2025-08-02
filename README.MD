@@ -1,7 +1,7 @@
 # Testez moi
 L'application [est disponible ici](https://passphrase.fr). Vous pouvez l'utiliser directement via ce lien ou cloner ce dépôt afin de réutiliser le code ou héberger votre propre instance de ce générateur.
 
-# Générateur de Passphrase complexe en Français
+# Générateur de Passphrases complexes en Français
 
 Une application web développée avec Symfony pour générer des mots de passe sécurisés et personnalisables. Cet outil permet aux utilisateurs de définir le nombre de mots, les séparateurs, les caractères spéciaux et la longueur du mot de passe. Il offre également une estimation de l'entropie pour évaluer la sécurité des mots de passe générés.
 
@@ -13,7 +13,12 @@ Une application web développée avec Symfony pour générer des mots de passe s
 [Testez l'API avec ce lien.](https://passphrase.fr/api/passwords?count=1&nb_mots=2&longueur_minimale=12&separateur=random&majuscule_debut=true&majuscule_aleatoire=false&longueur_nombre=2&caractere_special=random&caracteres_accentues=false)
 - **Cookie de sauvegarde des préférences** : Les préférences utilisateur (comme le nombre de mots, les séparateurs, etc.) sont sauvegardées dans un **cookie** afin de retrouver les mêmes paramètres lors de la prochaine utilisation de l'application.
 
+## Extension Chrome
 
+Une extension Chrome est disponible pour accéder rapidement au générateur de mots de passe directement depuis votre navigateur.
+
+- [Voir l’extension sur le Chrome Web Store](https://chromewebstore.google.com/detail/g%C3%A9n%C3%A9rateur-de-passphrase/bhlgfoknmmhgpfoanhoemjccephcanjd)
+- [Code source de l’extension sur GitHub](https://github.com/AlexandreMonchain/PassphraseChromeExtension)
 
 ## Mise en route
 

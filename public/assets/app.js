@@ -65,3 +65,19 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('password_generation_form_caracteres_accentues').checked = true;
     });
 });
+
+
+// Popup pour l'extension Chrome
+document.addEventListener("DOMContentLoaded", function () {
+    const popup = document.getElementById('extension-popup');
+    const closeBtn = document.getElementById('popup-close');
+
+    if (popup && closeBtn && !localStorage.getItem('extensionPopupClosed')) {
+        popup.style.display = 'block';
+
+        closeBtn.addEventListener('click', () => {
+            popup.style.display = 'none';
+            localStorage.setItem('extensionPopupClosed', 'true');
+        });
+    }
+});
