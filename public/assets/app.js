@@ -66,18 +66,24 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-
 // Popup pour l'extension Chrome
 document.addEventListener("DOMContentLoaded", function () {
-    const popup = document.getElementById('extension-popup');
-    const closeBtn = document.getElementById('popup-close');
-
-    if (popup && closeBtn && !localStorage.getItem('extensionPopupClosed')) {
-        popup.style.display = 'block';
-
-        closeBtn.addEventListener('click', () => {
-            popup.style.display = 'none';
-            localStorage.setItem('extensionPopupClosed', 'true');
-        });
+    const popup = document.getElementById("extension-popup");
+  
+    if (!popup) return;
+  
+    const closeBtn = document.getElementById("popup-close");
+  
+    if (!localStorage.getItem("extensionPopupClosed")) {
+      popup.style.display = "flex";
+    } else {
+      popup.style.display = "none";
     }
-});
+  
+    if (closeBtn) {
+      closeBtn.addEventListener("click", function () {
+        popup.style.display = "none";
+        localStorage.setItem("extensionPopupClosed", "true");
+      });
+    }
+  });

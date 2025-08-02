@@ -45,7 +45,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav mr-auto">
+                    <ul class="navbar-nav">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
                         </li>
@@ -55,9 +55,15 @@
                                 Blog
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdownBlog">
-                                <!-- Liens vers les articles -->
                                 <a class="dropdown-item" href="{{ path('blog_show', { 'slug': 'entropie' }) }}">Qu'est ce que l'entropie ?</a>
                             </div>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto w-100 justify-content-end">
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="https://chromewebstore.google.com/detail/g%C3%A9n%C3%A9rateur-de-passphrase/bhlgfoknmmhgpfoanhoemjccephcanjd" target="_blank" title="Installer l'extension Chrome">
+                                <i class="fab fa-chrome mr-1"></i>
+                            </a>
                         </li>
                     </ul>
                 </div>
