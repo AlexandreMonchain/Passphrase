@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   web:
     build:
@@ -8,17 +6,16 @@ services:
       args:
         GIT_REPO: ${GIT_REPO:-https://github.com/AlexandreMonchain/Passphrase.git}
         GIT_BRANCH: ${GIT_BRANCH:-dev}
+
     container_name: passphrase-web
+
     environment:
-      APP_ENV: ${APP_ENV:-prod}
-      APP_DEBUG: ${APP_DEBUG:-0}
-    volumes:
-      - app_cache:/app/var/cache
-      - app_logs:/app/var/log
+      APP_ENV: prod
+      APP_DEBUG: "0"
+      APP_SECRET: ${APP_SECRET:?APP_SECRET is required}
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
+
     ports:
       - "8000:80"
-    restart: unless-stopped
 
-volumes:
-  app_cache:
-  app_logs:
+    restart: unless-stopped

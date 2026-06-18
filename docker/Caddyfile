@@ -1,5 +1,0 @@
-{$DOMAIN:localhost} {
-    reverse_proxy web:80 {
-        header_uri X-Forwarded-Proto https
-    }
-}

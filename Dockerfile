@@ -1,6 +1,5 @@
 FROM php:8.2-fpm-alpine
 
-# Install system dependencies
 RUN apk add --no-cache \
     git \
     curl \
@@ -9,64 +8,61 @@ RUN apk add --no-cache \
     supervisor \
     composer \
     unzip \
+    su-exec \
     icu-dev \
     libxml2-dev \
     oniguruma-dev \
     sqlite-dev \
     $PHPIZE_DEPS \
-    && docker-php-ext-install -j$(nproc) intl mbstring pdo_sqlite xml
+    && docker-php-ext-install -j"$(nproc)" \
+        intl \
+        mbstring \
+        pdo_sqlite \
+        pdo_mysql \
+        xml
 
-# Create app user
-RUN addgroup -g 1000 app && adduser -D -u 1000 -G app app
-
-# Set working directory
 WORKDIR /app
 
-# Build arguments
 ARG GIT_REPO=https://github.com/AlexandreMonchain/Passphrase.git
 ARG GIT_BRANCH=dev
 
-# Clone repository
-RUN echo "Cloning repository..." && \
-    git clone --branch ${GIT_BRANCH} --depth 1 ${GIT_REPO} . && \
-    git config --global --add safe.directory /app
+RUN echo "Cloning repository..." \
+    && git clone --branch "${GIT_BRANCH}" --depth 1 "${GIT_REPO}" . \
+    && git config --global --add safe.directory /app
 
-# Install PHP dependencies
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV COMPOSER_MEMORY_LIMIT=-1
+ENV APP_ENV=prod
+ENV APP_DEBUG=0
 
-# Install PHP dependencies in a resilient way for CI/Portainer environments.
+# Symfony Runtime exige actuellement la présence de /app/.env.
+# Les vraies valeurs sensibles seront fournies par Portainer.
+RUN if [ ! -f /app/.env ]; then \
+        printf 'APP_ENV=prod\nAPP_DEBUG=0\n' > /app/.env; \
+    fi
+
 RUN composer install \
     --no-dev \
     --prefer-dist \
     --optimize-autoloader \
     --no-interaction \
     --no-scripts \
-    --no-progress \
-    --ignore-platform-reqs
+    --no-progress
 
-# Create necessary directories
-RUN echo "Creating directories..." && \
-    mkdir -p var/cache var/log && \
-    chown -R app:app var
+RUN mkdir -p /app/var/cache /app/var/log \
+    && chown -R www-data:www-data /app/var \
+    && chmod -R ug+rwX /app/var
 
-# Copy configuration files
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 COPY docker/supervisord.conf /etc/supervisord.conf
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Set permissions
-RUN chown -R app:app /app && \
-    find /app/public -type d -exec chmod 755 {} \; && \
-    find /app/public -type f -exec chmod 644 {} \;
+RUN chmod +x /usr/local/bin/entrypoint.sh \
+    && chown -R www-data:www-data /app
 
-# Expose port
 EXPOSE 80
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -f http://localhost/index.php || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD curl -fsS http://localhost/ || exit 1
 
-# Start services
 CMD ["/usr/local/bin/entrypoint.sh"]

@@ -1,13 +1,26 @@
 #!/bin/sh
-set -e
+set -eu
+
+cd /app
 
 echo "🚀 Starting Passphrase..."
 
-# Clear cache
-echo "🧹 Warming up cache..."
-php bin/console cache:warmup --no-interaction 2>/dev/null || true
+mkdir -p var/cache var/log
+chown -R www-data:www-data var
+chmod -R ug+rwX var
 
-# Start supervisord
+echo "🧹 Clearing Symfony cache..."
+
+su-exec www-data php bin/console cache:clear \
+    --env=prod \
+    --no-debug \
+    --no-interaction
+
+su-exec www-data php bin/console cache:warmup \
+    --env=prod \
+    --no-debug \
+    --no-interaction
+
 echo "✅ Services ready!"
-exec /usr/bin/supervisord -c /etc/supervisord.conf
 
+exec /usr/bin/supervisord -c /etc/supervisord.conf
