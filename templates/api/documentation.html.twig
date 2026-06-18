@@ -1,0 +1,189 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Documentation API - Passphrase{% endblock %}
+
+{% block body %}
+    <section class="hero-section">
+        <div class="hero-icon">📡</div>
+        <h1 class="hero-title">Documentation API</h1>
+        <p class="hero-subtitle">Intégrez la génération de passphrases dans vos applications</p>
+    </section>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="api-doc card-modern">
+                    <h2 class="card-title" id="overview">
+                        <i class="fas fa-rocket"></i> Vue d'ensemble
+                    </h2>
+                    <p>
+                        L'API REST Passphrase permet de générer des passphrases sécurisées directement depuis vos applications. 
+                        Le service est <strong>gratuit et open source</strong>, sans authentification requise.
+                    </p>
+
+                    <hr class="my-4">
+
+                    <h2 class="card-title" id="endpoint">
+                        <i class="fas fa-link"></i> Endpoint
+                    </h2>
+                    <div class="api-endpoint-box">
+                        <code>GET {{ app.request.schemeAndHttpHost }}/api/passwords</code>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h2 class="card-title" id="parameters">
+                        <i class="fas fa-sliders-h"></i> Paramètres
+                    </h2>
+                    <p>Tous les paramètres sont optionnels. Voici les valeurs par défaut:</p>
+                    <table class="api-params-table">
+                        <thead>
+                            <tr>
+                                <th>Paramètre</th>
+                                <th>Type</th>
+                                <th>Défaut</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>count</code></td>
+                                <td>int</td>
+                                <td>1</td>
+                                <td>Nombre de passphrases à générer (1-100)</td>
+                            </tr>
+                            <tr>
+                                <td><code>nb_mots</code></td>
+                                <td>int</td>
+                                <td>2</td>
+                                <td>Nombre de mots par passphrase (2-7)</td>
+                            </tr>
+                            <tr>
+                                <td><code>longueur_minimale</code></td>
+                                <td>int</td>
+                                <td>12</td>
+                                <td>Longueur minimale du résultat (8-50)</td>
+                            </tr>
+                            <tr>
+                                <td><code>separateur</code></td>
+                                <td>string</td>
+                                <td>random</td>
+                                <td>Séparateur entre les mots (-, _, -, *, random)</td>
+                            </tr>
+                            <tr>
+                                <td><code>majuscule_debut</code></td>
+                                <td>boolean</td>
+                                <td>true</td>
+                                <td>Majuscule au début du mot</td>
+                            </tr>
+                            <tr>
+                                <td><code>majuscule_aleatoire</code></td>
+                                <td>boolean</td>
+                                <td>false</td>
+                                <td>Majuscules aléatoires dans les mots</td>
+                            </tr>
+                            <tr>
+                                <td><code>longueur_nombre</code></td>
+                                <td>int</td>
+                                <td>2</td>
+                                <td>Longueur des chiffres (0-5)</td>
+                            </tr>
+                            <tr>
+                                <td><code>caractere_special</code></td>
+                                <td>string</td>
+                                <td>random</td>
+                                <td>Type de caractères spéciaux (random, none, !@#)</td>
+                            </tr>
+                            <tr>
+                                <td><code>caracteres_accentues</code></td>
+                                <td>boolean</td>
+                                <td>true</td>
+                                <td>Inclure les caractères accentués</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <hr class="my-4">
+
+                    <h2 class="card-title" id="response">
+                        <i class="fas fa-exchange-alt"></i> Format de réponse
+                    </h2>
+                    <p>La réponse est au format JSON:</p>
+                    <div class="api-code-block">
+                        <pre><code>{
+  "passwords": [
+    "Economie-Etrier57:",
+    "Menton-Pancarte65!",
+    "Sieger-Distribuer52#"
+  ]
+}</code></pre>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h2 class="card-title" id="examples">
+                        <i class="fas fa-copy"></i> Exemples d'utilisation
+                    </h2>
+
+                    <h4 class="mt-3">cURL basique</h4>
+                    <div class="api-code-block">
+                        <pre><code>curl "{{ app.request.schemeAndHttpHost }}/api/passwords?count=3"</code></pre>
+                    </div>
+
+                    <h4 class="mt-3">Avec paramètres personnalisés</h4>
+                    <div class="api-code-block">
+                        <pre><code>curl "{{ app.request.schemeAndHttpHost }}/api/passwords?count=5&nb_mots=3&longueur_minimale=20&separateur=-&majuscule_aleatoire=true"</code></pre>
+                    </div>
+
+                    <h4 class="mt-3">JavaScript (Fetch)</h4>
+                    <div class="api-code-block">
+                        <pre><code>fetch("{{ app.request.schemeAndHttpHost }}/api/passwords?count=2&nb_mots=2")
+  .then(res => res.json())
+  .then(data => console.log(data.passwords));</code></pre>
+                    </div>
+
+                    <h4 class="mt-3">Python</h4>
+                    <div class="api-code-block">
+                        <pre><code>import requests
+
+url = "{{ app.request.schemeAndHttpHost }}/api/passwords"
+params = {"count": 3, "nb_mots": 2, "longueur_minimale": 15}
+response = requests.get(url, params=params)
+passwords = response.json()["passwords"]
+print(passwords)</code></pre>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h2 class="card-title" id="notes">
+                        <i class="fas fa-sticky-note"></i> Notes importantes
+                    </h2>
+                    <ul class="api-notes">
+                        <li>L'API est <strong>sans limite</strong> et <strong>sans authentification</strong></li>
+                        <li>Les passphrases sont générées à partir d'une liste de mots français de référence</li>
+                        <li>L'entropie n'est pas retournée par l'API (voir l'interface web)</li>
+                        <li>Les requêtes sont traitées synchronement et répondent rapidement (&lt;100ms)</li>
+                        <li>CORS est activé pour les requêtes cross-origin depuis les navigateurs</li>
+                        <li>Pensez à nous citer si vous l'utilisez dans vos projets! 🤗</li>
+                    </ul>
+
+                    <hr class="my-4">
+
+                    <div class="api-test-section">
+                        <h3>Vous voulez tester?</h3>
+                        <p>Cliquez sur le bouton ci-dessous pour générer 5 passphrases directement:</p>
+                        <a href="{{ path('api_generate_passwords') }}?count=5&nb_mots=2&longueur_minimale=12" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                            <i class="fas fa-play"></i> Tester l'API maintenant
+                        </a>
+                    </div>
+
+                    <div class="mt-5 text-center">
+                        <a href="{{ path('app_home') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour à la page d'accueil
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

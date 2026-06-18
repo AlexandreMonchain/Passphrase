@@ -32,71 +32,77 @@
             </script>
         <!-- END Google tag (gtag.js) -->
         <link rel="canonical" href="{{ app.request.scheme ~ '://' ~ app.request.host ~ app.request.pathInfo }}">
+        <!-- Google Fonts: Inter -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <title>{% block title %}Passphrase{% endblock %}</title>        
         <link defer rel="stylesheet" href="{{ asset('assets/bootstrap.min.css') }}">
         <link defer rel="stylesheet" href="{{ asset('assets/app.css') }}">
     </head>
     <body>
-        <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container">
-                <a class="navbar-brand" href="{{ path('app_home') }}">Passphrase</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+        <!-- Navbar moderne -->
+        <nav class="navbar-modern">
+            <div class="nav-container">
+                <a class="nav-logo" href="{{ path('app_home') }}">
+                    <i class="fas fa-lock"></i> Passphrase
+                </a>
+                <button class="nav-toggle" aria-label="Toggle navigation" onclick="toggleNav()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
-                        </li>
-                        <!-- Menu déroulant pour le Blog -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBlog" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Blog
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdownBlog">
-                                <a class="dropdown-item" href="{{ path('blog_show', { 'slug': 'entropie' }) }}">Qu'est ce que l'entropie ?</a>
-                            </div>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav ms-auto w-100 justify-content-end">
-                        <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center" href="https://chromewebstore.google.com/detail/g%C3%A9n%C3%A9rateur-de-passphrase/bhlgfoknmmhgpfoanhoemjccephcanjd" target="_blank" title="Installer l'extension Chrome">
-                                <i class="fab fa-chrome mr-1"></i>
-                            </a>
-                        </li>
-                    </ul>
+                <div class="nav-menu" id="navMenu">
+                    <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
+                    <a class="nav-link" href="{{ path('blog_show', { 'slug': 'entropie' }) }}">Blog</a>
+                    <a class="nav-link" href="{{ path('api_documentation') }}">API</a>
+                    <a class="nav-link nav-extension" href="https://chromewebstore.google.com/detail/générateur-de-passphrase/bhlgfoknmmhgpfoanhoemjccephcanjd" target="_blank" rel="noopener" title="Extension Chrome">
+                        <i class="fab fa-chrome"></i>
+                    </a>
                 </div>
             </div>
         </nav>
 
-
         <!-- Contenu principal -->
-        <main>
+        <main class="main-content">
         {% block body %}{% endblock %}
         </main>
-    </body>
-    <footer class="bg-light text-center text-lg-start mt-4">
-        <div class="container p-4">
-            <div class="row">
-                <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
-                    <p class="text-center">
-                       Passphrase v1.3.2 © 2024-2026 Alexandre MONCHAIN. Sous licence <a href="https://github.com/AlexandreMonchain/Passphrase/blob/main/LICENSE" target="_blank">MIT</a>.
+
+        <!-- Footer moderne -->
+        <footer class="footer-modern">
+            <div class="footer-container">
+                <div class="footer-content">
+                    <p class="footer-text">
+                        <strong>Passphrase v1.3.2</strong> • © 2024-2026 Alexandre MONCHAIN
                     </p>
-                </div>
-                <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
-                    <p class="text-center">
-                        <a href="https://github.com/AlexandreMonchain/Passphrase" target="_blank" class="text-dark">
-                            <i class="fab fa-github"></i> Un problème, une suggestion ? Visitez mon GitHub
+                    <p class="footer-links">
+                        <a href="https://github.com/AlexandreMonchain/Passphrase" target="_blank" rel="noopener" aria-label="GitHub">
+                            <i class="fab fa-github"></i>
                         </a>
+                        <span class="separator">•</span>
+                        <a href="https://github.com/AlexandreMonchain/Passphrase/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
                     </p>
                 </div>
             </div>
-        </div>
-        <link defer rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        </footer>
+
         <script defer src={{ asset('assets/jquery-3.6.0.min.js') }}></script>
         <script defer src={{ asset('assets/app.js') }}></script>
         <script defer src={{ asset('assets/bootstrap.min.js') }}></script>
+        <script>
+            function toggleNav() {
+                const menu = document.getElementById('navMenu');
+                menu.classList.toggle('active');
+            }
+            document.addEventListener('click', function(e) {
+                const nav = document.querySelector('.navbar-modern');
+                if (!nav.contains(e.target)) {
+                    document.getElementById('navMenu').classList.remove('active');
+                }
+            });
+        </script>
         {% block script %}{% endblock %}
     </footer>
 </html>

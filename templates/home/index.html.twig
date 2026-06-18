@@ -3,127 +3,174 @@
 {% block title %}Générateur de mots de passe{% endblock %}
 
 {% block body %}
-    <div class="container d-flex flex-column align-items-center justify-content-center min-vh-100">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-icon">🔐</div>
+        <h1 class="hero-title">Générateur de Passphrase</h1>
+        <p class="hero-subtitle">Créez des mots de passe forts et uniques. Sécurisez vos comptes en ligne.</p>
+    </section>
 
-        <h1 class="mb-4">Générateur de Passphrase</h1>
-        
-        <!-- Messages d'erreur/succès -->
-        <div id="form-messages" role="alert" aria-live="polite" aria-atomic="true"></div>
+    <div class="container">
+        <div class="row g-4">
+            <!-- Colonne Gauche: Formulaire & Génération -->
+            <div class="col-lg-8">
+                
+                <!-- Messages d'erreur/succès -->
+                <div id="form-messages" role="alert" aria-live="polite" aria-atomic="true"></div>
 
-        <!-- Mots de passe générés -->
-        <div id="generated-passwords" class="col-md-8 mb-3">
-            {% include 'home/_generated_passwords.html.twig' %}
-        </div>
-
-        <!-- Formulaire de génération -->
-        <div class="col-md-8">
-            {{ form_start(form, {'attr': {'id': 'password-generator-form', 'class': 'form-group w-100', 'novalidate': 'novalidate'}}) }}
-
-            <!-- Bouton de génération -->
-            <div class="mb-3 text-center">
-                {{ form_widget(form.generate, {'attr': {'class': 'btn btn-primary', 'id': 'generate-btn', 'aria-label': 'Générer des mots de passe'}}) }}
-            </div>
-
-            <!-- Animation de chargement (hidden by default) -->
-            <div id="loading-animation" class="text-center d-none" role="status" aria-live="polite">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Génération en cours...</span>
+                <!-- Mots de passe générés -->
+                <div id="generated-passwords" class="mb-4">
+                    {% include 'home/_generated_passwords.html.twig' %}
                 </div>
-                <p class="mt-2 text-muted">Génération en cours...</p>
-            </div>
 
-            <!-- Formulaire de configuration compact -->
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title text-center">Personnalisation du mot de passe</h5>
-                    
-                    <div class="row">
-                        <!-- Nombre de mots, séparateur -->
+                <!-- Formulaire de génération -->
+                <div class="card-modern">
+                    {{ form_start(form, {'attr': {'id': 'password-generator-form', 'novalidate': 'novalidate'}}) }}
+
+                    <h2 class="card-title">
+                        <i class="fas fa-sliders-h"></i> Personnalisation
+                    </h2>
+
+                    <!-- Bouton de génération principal -->
+                    <div class="mb-4 text-center">
+                        {{ form_widget(form.generate, {'attr': {'class': 'btn btn-primary btn-lg', 'id': 'generate-btn', 'aria-label': 'Générer des mots de passe'}}) }}
+                    </div>
+
+                    <!-- Animation de chargement -->
+                    <div id="loading-animation" class="text-center d-none" role="status" aria-live="polite">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Génération en cours...</span>
+                        </div>
+                        <p class="mt-3 text-muted">Génération en cours...</p>
+                    </div>
+
+                    <!-- Grille de formulaire -->
+                    <div class="row gy-3">
+                        <!-- Ligne 1: Nombre de mots et Séparateur -->
                         <div class="col-md-6">
                             <div class="mb-3">
                                 {{ form_label(form.nb_mots, null, {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(form.nb_mots, {'attr': {'class': 'form-control', 'aria-describedby': 'help-nb_mots'}}) }}
-                                <small id="help-nb_mots" class="form-text text-muted">Nombre de mots à combiner (2-7)</small>
+                                <small id="help-nb_mots" class="form-text">Nombre de mots: 2 à 7</small>
                             </div>
+                        </div>
 
+                        <div class="col-md-6">
                             <div class="mb-3">
                                 {{ form_label(form.separateur, null, {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(form.separateur, {'attr': {'class': 'form-control'}}) }}
                             </div>
                         </div>
 
-                        <!-- Longueur des chiffres et caractère spécial -->
+                        <!-- Ligne 2: Longueur minimale -->
+                        <div class="col-12">
+                            <div class="mb-3">
+                                {{ form_label(form.longueur_minimale, null, {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.longueur_minimale, {'attr': {'class': 'form-control', 'min': '8', 'max': '50', 'type': 'range'}}) }}
+                                <small class="form-text">Longueur minimale: 8 à 50 caractères</small>
+                            </div>
+                        </div>
+
+                        <!-- Ligne 3: Longueur nombres et Caractères spéciaux -->
                         <div class="col-md-6">
                             <div class="mb-3">
                                 {{ form_label(form.longueur_nombre, null, {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(form.longueur_nombre, {'attr': {'class': 'form-control'}}) }}
                             </div>
+                        </div>
 
+                        <div class="col-md-6">
                             <div class="mb-3">
                                 {{ form_label(form.caractere_special, null, {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(form.caractere_special, {'attr': {'class': 'form-control'}}) }}
                             </div>
                         </div>
+
+                        <!-- Ligne 4: Checkboxes -->
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        {{ form_widget(form.majuscule_debut, {'attr': {'class': 'form-check-input'}}) }}
+                                        {{ form_label(form.majuscule_debut, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        {{ form_widget(form.majuscule_aleatoire, {'attr': {'class': 'form-check-input'}}) }}
+                                        {{ form_label(form.majuscule_aleatoire, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        {{ form_widget(form.caracteres_accentues, {'attr': {'class': 'form-check-input'}}) }}
+                                        {{ form_label(form.caracteres_accentues, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bouton Reset -->
+                        <div class="col-12 text-center mt-2">
+                            <button type="button" id="load-defaults-btn" class="btn btn-secondary btn-sm" aria-label="Réinitialiser les paramètres">
+                                <i class="fas fa-redo-alt"></i> Réinitialiser
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="row justify-content-center">
-                        <div class="col-6">
-                            <div class="mb-3">
-                                {{ form_label(form.longueur_minimale, null, {'label_attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(form.longueur_minimale, {'attr': {'class': 'form-control', 'min': '8', 'max': '50'}}) }}
-                                <small class="form-text text-muted">Longueur minimale: 8-50 caractères</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-check mb-3">
-                                {{ form_widget(form.majuscule_debut, {'attr': {'class': 'form-check-input'}}) }}
-                                {{ form_label(form.majuscule_debut, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-check mb-3">
-                                {{ form_widget(form.majuscule_aleatoire, {'attr': {'class': 'form-check-input'}}) }}
-                                {{ form_label(form.majuscule_aleatoire, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-check mb-3">
-                                {{ form_widget(form.caracteres_accentues, {'attr': {'class': 'form-check-input'}}) }}
-                                {{ form_label(form.caracteres_accentues, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Bouton pour charger les valeurs par défaut -->
-                    <div class="col-md-6 text-left">
-                        <button type="button" id="load-defaults-btn" class="btn btn-light btn-sm" aria-label="Réinitialiser les paramètres">
-                            <i class="fas fa-sync-alt" aria-hidden="true"></i> Reset
-                        </button>
-                    </div>
+                    {{ form_end(form) }}
                 </div>
             </div>
-            {{ form_end(form) }}
-        </div>
 
-        <!-- Légende d'entropie à droite sur desktop et en bas sur mobile -->
-        <div class="entropy-legend card mt-4">
-            <div class="card-body">
-                <h4 class="card-title text-center">Légende de l'entropie</h4>
-                <ul class="list-unstyled">
-                    <li><span class="very-weak" aria-label="Très faible"></span> Très faible ( &lt; 80 bits )</li>
-                    <li><span class="weak" aria-label="Faible"></span> Faible ( &lt; 100 bits )</li>
-                    <li><span class="medium" aria-label="Moyen"></span> Moyen ( &lt; 110 bits )</li>
-                    <li><span class="good" aria-label="Bon"></span> Bon ( &lt; 120 bits )</li>
-                    <li><span class="strong" aria-label="Fort"></span> Fort ( &lt; 130 bits )</li>
-                    <li><span class="very-strong" aria-label="Très fort"></span> Très fort ( ≥ 130 bits )</li>
-                </ul>
-                <!-- Lien vers la page de la CNIL -->
-                <div class="text-center mt-3">
-                    <a href="{{ path('blog_show', {'slug': 'entropie'}) }}" target="_blank" class="btn btn-outline-info" rel="noopener noreferrer">
-                        Qu'est-ce que l'Entropie ? <span class="visually-hidden">(ouverture dans une nouvelle fenêtre)</span>
+            <!-- Colonne Droite: Légende Entropie -->
+            <div class="col-lg-4">
+                <div class="entropy-legend card-modern">
+                    <h3 class="card-title">
+                        <i class="fas fa-info-circle"></i> Entropie
+                    </h3>
+                    <ul>
+                        <li>
+                            <span class="very-weak" aria-label="Très faible"></span>
+                            <strong>Très faible</strong> &lt; 80 bits
+                        </li>
+                        <li>
+                            <span class="weak" aria-label="Faible"></span>
+                            <strong>Faible</strong> &lt; 100 bits
+                        </li>
+                        <li>
+                            <span class="medium" aria-label="Moyen"></span>
+                            <strong>Moyen</strong> &lt; 110 bits
+                        </li>
+                        <li>
+                            <span class="good" aria-label="Bon"></span>
+                            <strong>Bon</strong> &lt; 120 bits
+                        </li>
+                        <li>
+                            <span class="strong" aria-label="Fort"></span>
+                            <strong>Fort</strong> &lt; 130 bits
+                        </li>
+                        <li>
+                            <span class="very-strong" aria-label="Très fort"></span>
+                            <strong>Très fort</strong> ≥ 130 bits
+                        </li>
+                    </ul>
+
+                    <!-- Lien vers la page du Blog -->
+                    <div class="text-center mt-3">
+                        <a href="{{ path('blog_show', {'slug': 'entropie'}) }}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-book"></i> En savoir plus
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card API Info -->
+                <div class="card-modern mt-4 api-card">
+                    <h3 class="card-title">
+                        <i class="fas fa-code"></i> API
+                    </h3>
+                    <p class="text-muted api-description">Une API REST est disponible pour intégrer la génération de passphrases dans vos applications. Consultez la documentation complète pour connaître tous les paramètres et exemples.</p>
+                    <a href="{{ path('api_documentation') }}" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-book"></i> Docs
                     </a>
                 </div>
             </div>
@@ -132,13 +179,13 @@
 
     <!-- Extension Chrome Banner -->
     <div id="extension-popup" class="extension-banner-bottom" role="complementary" aria-label="Promotion extension Chrome">
-      <div class="extension-content">
-        🚀 Découvrez l'extension Chrome pour générer vos mots de passe plus rapidement !
-        <a href="https://chromewebstore.google.com/detail/g%C3%A9n%C3%A9rateur-de-passphrase/bhlgfoknmmhgpfoanhoemjccephcanjd" target="_blank" class="btn btn-sm btn-light ms-2" rel="noopener noreferrer">
-            Installer maintenant
+        <div class="extension-content">
+            🚀 Découvrez l'extension Chrome pour générer vos mots de passe plus rapidement !
+        </div>
+        <a href="https://chromewebstore.google.com/detail/générateur-de-passphrase/bhlgfoknmmhgpfoanhoemjccephcanjd" target="_blank" rel="noopener" class="btn btn-light btn-sm">
+            Installer
         </a>
-      </div>
-      <button id="popup-close" class="popup-close-btn" aria-label="Fermer la notification">×</button>
+        <button id="popup-close" class="popup-close-btn" aria-label="Fermer la notification">✕</button>
     </div>
 
     <script>
@@ -152,11 +199,11 @@
                 form.addEventListener('submit', function() {
                     generateBtn.disabled = true;
                     loadingAnimation.classList.remove('d-none');
-                    formMessages.innerHTML = ''; // Nettoyer les messages précédents
+                    formMessages.innerHTML = '';
                 });
             }
 
-            // Fermeture du banner d'extension
+            // Gestion du banner d'extension
             const popupClose = document.getElementById('popup-close');
             if (popupClose) {
                 popupClose.addEventListener('click', function() {
@@ -164,7 +211,6 @@
                     localStorage.setItem('extension-banner-closed', 'true');
                 });
                 
-                // Ne pas afficher si l'utilisateur l'a fermé avant
                 if (localStorage.getItem('extension-banner-closed')) {
                     document.getElementById('extension-popup').style.display = 'none';
                 }
