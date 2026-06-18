@@ -1,3 +1,4 @@
+[![Version 1.3.2](https://img.shields.io/badge/Version-1.3.2-blue)](https://github.com/AlexandreMonchain/Passphrase/releases)
 [![Symfony 7.4 LTS](https://img.shields.io/badge/Symfony-7.4%20LTS-000?logo=symfony)](https://symfony.com)
 [![PHP 8.2+](https://img.shields.io/badge/PHP-8.2%2B-777?logo=php)](https://php.net)
 [![License MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
@@ -80,4 +81,4 @@ Paramètres: `nb_mots` (2-7), `count` (1-100), `longueur_minimale` (8-50), `sepa
 
 ---
 
-**Passphrase © 2024-2025 Alexandre MONCHAIN** | [GitHub](https://github.com/AlexandreMonchain/Passphrase) | [Chrome Extension](https://chromewebstore.google.com/detail/générateur-de-passphrase/bhlgfoknmmhgpfoanhoemjccephcanjd)
+**Passphrase v1.3.2** | **© 2024-2026 Alexandre MONCHAIN** | [GitHub](https://github.com/AlexandreMonchain/Passphrase) | [Chrome Extension](https://chromewebstore.google.com/detail/générateur-de-passphrase/bhlgfoknmmhgpfoanhoemjccephcanjd)
