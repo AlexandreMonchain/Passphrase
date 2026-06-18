@@ -106,8 +106,6 @@ docker-compose exec web php bin/phpunit
 
 **Endpoint**: `GET /api/passwords`
 
-**Documentation complète**: [/api/documentation](/api/documentation)
-
 ### Exemple rapide
 
 ```bash
@@ -189,169 +187,23 @@ Si vous rencontrez des problèmes ou avez des suggestions d'amélioration, n'hé
 - ✅ CSRF protection
 - ✅ XSS protection (Twig auto-escaping)
 
-## Bonnes Pratiques en Production
-
-⚠️ **Le conteneur Docker expose le port 80 en HTTP non chiffré.** En production, vous DEVEZ positionner Passphrase derrière un **reverse proxy** qui gère:
-
-- **HTTPS/TLS** — Chiffrement des données en transit (certificat SSL/Let's Encrypt)
-- **Rate limiting** — Limiter les requêtes pour éviter les abus
-- **Security headers** — Headers HTTP de sécurité (HSTS, X-Frame-Options, etc.)
-- **Load balancing** — Répartition de charge si plusieurs instances
-- **DDoS protection** — Filtrage des attaques distribuées
-
-**Solutions recommandées:**
-- **Nginx** (reverse proxy local) — Simple, performant
-- **Caddy** — Auto-HTTPS avec Let's Encrypt
-- **Traefik** — Orchestration multi-conteneurs
-....
-
-**Exemple avec Nginx (voir section Déploiement)** — Le reverse proxy écoute en HTTPS (443) et forwarde vers le conteneur sur HTTP (8000).
-
 ## Déploiement en production
 
 ### Avec Docker (recommandé)
 
-**Architecture recommandée:**
-```
-Internet (HTTPS 443)
-    ↓
-Caddy / Nginx (reverse proxy, TLS)
-    ↓ (HTTP interne, port 80)
-Passphrase container
-```
-
-**Option 1: Reverse proxy externe (Nginx local)**
-
-Si vous avez déjà un Nginx/Caddy sur votre serveur:
-
-1. Démarrer Passphrase en exposant le port 8000:
 ```bash
 docker-compose up -d --build
-# → Écoute sur http://localhost:8000
+# App dispo sur http://localhost:8000
 ```
 
-2. Configurer votre reverse proxy pour écouter en HTTPS et renvoyer vers le container:
+Le conteneur écoute en HTTP interne (port 80, publié sur 8000).
 
-```nginx
-server {
-    listen 443 ssl http2;
-    server_name passphrase.fr;
-    
-    ssl_certificate /etc/letsencrypt/live/passphrase.fr/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/passphrase.fr/privkey.pem;
+Pour la prod, faites au choix:
 
-    location / {
-        # Le container écoute sur le port 80 INTERNE (8000 du HOST)
-        proxy_pass http://127.0.0.1:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
-    }
-}
+1. Mettre l'app derrière un reverse proxy (Nginx/Caddy/Traefik) qui gère HTTPS en 443.
+2. Modifier la conf pour servir directement en 443 avec un certificat TLS.
 
-# Redirection HTTP → HTTPS
-server {
-    listen 80;
-    server_name passphrase.fr;
-    return 301 https://$server_name$request_uri;
-}
-```
-
-**Option 2: Caddy en Docker (tout-en-un)**
-
-Plus simple: un container Caddy gère HTTPS et renvoie vers Passphrase en réseau interne.
-
-Créer un `docker-compose.prod.yml`:
-
-```yaml
-version: '3.9'
-
-services:
-  caddy:
-    image: caddy:2-alpine
-    container_name: passphrase-caddy
-    ports:
-      - "80:80"
-      - "443:443"
-    environment:
-      - DOMAIN=passphrase.fr
-    volumes:
-      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data
-      - caddy_config:/config
-    networks:
-      - passphrase
-    restart: unless-stopped
-
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        GIT_REPO: ${GIT_REPO:-https://github.com/AlexandreMonchain/Passphrase.git}
-        GIT_BRANCH: ${GIT_BRANCH:-main}
-    container_name: passphrase-web
-    environment:
-      APP_ENV: prod
-      APP_DEBUG: 0
-    volumes:
-      - app_cache:/app/var/cache
-      - app_logs:/app/var/log
-    networks:
-      - passphrase
-    restart: unless-stopped
-
-volumes:
-  app_cache:
-  app_logs:
-  caddy_data:
-  caddy_config:
-
-networks:
-  passphrase:
-    driver: bridge
-```
-
-Créer `docker/Caddyfile`:
-
-```caddyfile
-{$DOMAIN:localhost} {
-    reverse_proxy web:80 {
-        header_uri X-Forwarded-Proto https
-    }
-}
-```
-
-Lancer:
-```bash
-DOMAIN=passphrase.fr docker-compose -f docker-compose.prod.yml up -d --build
-# → Caddy écoute sur 80/443 (HTTPS automatique)
-# → Renvoie en interne vers web:80
-```
-
-### Variables d'environnement (optionnel)
-
-```bash
-# Production
-export APP_ENV=prod
-export APP_DEBUG=0
-
-# Utiliser un fork
-export GIT_REPO=https://github.com/votreusername/Passphrase.git
-export GIT_BRANCH=main
-```
-
-    location / {
-        proxy_pass http://localhost:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
+Ne JAMAIS exposer une application en HTTP en production.
 
 ## Licence
 
