@@ -5,7 +5,11 @@
 {% block body %}
     <div class="container d-flex flex-column align-items-center justify-content-center min-vh-100">
 
-        <h1>Générateur de Passphrase</h1>
+        <h1 class="mb-4">Générateur de Passphrase</h1>
+        
+        <!-- Messages d'erreur/succès -->
+        <div id="form-messages" role="alert" aria-live="polite" aria-atomic="true"></div>
+
         <!-- Mots de passe générés -->
         <div id="generated-passwords" class="col-md-8 mb-3">
             {% include 'home/_generated_passwords.html.twig' %}
@@ -13,18 +17,19 @@
 
         <!-- Formulaire de génération -->
         <div class="col-md-8">
-            {{ form_start(form, {'attr': {'id': 'password-generator-form', 'class': 'form-group w-100'}}) }}
+            {{ form_start(form, {'attr': {'id': 'password-generator-form', 'class': 'form-group w-100', 'novalidate': 'novalidate'}}) }}
 
             <!-- Bouton de génération -->
             <div class="mb-3 text-center">
-                {{ form_widget(form.generate, {'attr': {'class': 'btn btn-primary', 'id': 'generate-btn'}}) }}
+                {{ form_widget(form.generate, {'attr': {'class': 'btn btn-primary', 'id': 'generate-btn', 'aria-label': 'Générer des mots de passe'}}) }}
             </div>
 
             <!-- Animation de chargement (hidden by default) -->
-            <div id="loading-animation" class="text-center" style="display:none;">
+            <div id="loading-animation" class="text-center d-none" role="status" aria-live="polite">
                 <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Chargement...</span>
+                    <span class="visually-hidden">Génération en cours...</span>
                 </div>
+                <p class="mt-2 text-muted">Génération en cours...</p>
             </div>
 
             <!-- Formulaire de configuration compact -->
@@ -36,12 +41,13 @@
                         <!-- Nombre de mots, séparateur -->
                         <div class="col-md-6">
                             <div class="mb-3">
-                                {{ form_label(form.nb_mots) }}
-                                {{ form_widget(form.nb_mots, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_label(form.nb_mots, null, {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.nb_mots, {'attr': {'class': 'form-control', 'aria-describedby': 'help-nb_mots'}}) }}
+                                <small id="help-nb_mots" class="form-text text-muted">Nombre de mots à combiner (2-7)</small>
                             </div>
 
                             <div class="mb-3">
-                                {{ form_label(form.separateur) }}
+                                {{ form_label(form.separateur, null, {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(form.separateur, {'attr': {'class': 'form-control'}}) }}
                             </div>
                         </div>
@@ -49,12 +55,12 @@
                         <!-- Longueur des chiffres et caractère spécial -->
                         <div class="col-md-6">
                             <div class="mb-3">
-                                {{ form_label(form.longueur_nombre) }}
+                                {{ form_label(form.longueur_nombre, null, {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(form.longueur_nombre, {'attr': {'class': 'form-control'}}) }}
                             </div>
 
                             <div class="mb-3">
-                                {{ form_label(form.caractere_special) }}
+                                {{ form_label(form.caractere_special, null, {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(form.caractere_special, {'attr': {'class': 'form-control'}}) }}
                             </div>
                         </div>
@@ -63,8 +69,9 @@
                     <div class="row justify-content-center">
                         <div class="col-6">
                             <div class="mb-3">
-                                {{ form_label(form.longueur_minimale) }}
-                                {{ form_widget(form.longueur_minimale, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_label(form.longueur_minimale, null, {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.longueur_minimale, {'attr': {'class': 'form-control', 'min': '8', 'max': '50'}}) }}
+                                <small class="form-text text-muted">Longueur minimale: 8-50 caractères</small>
                             </div>
                         </div>
                     </div>
@@ -92,9 +99,8 @@
 
                     <!-- Bouton pour charger les valeurs par défaut -->
                     <div class="col-md-6 text-left">
-                        <button type="button" id="load-defaults-btn" class="btn btn-light btn-sm">
-                            <i class="fas fa-sync-alt"></i> <!-- icone recharger -->
-                            Reset
+                        <button type="button" id="load-defaults-btn" class="btn btn-light btn-sm" aria-label="Réinitialiser les paramètres">
+                            <i class="fas fa-sync-alt" aria-hidden="true"></i> Reset
                         </button>
                     </div>
                 </div>
@@ -103,33 +109,66 @@
         </div>
 
         <!-- Légende d'entropie à droite sur desktop et en bas sur mobile -->
-        <div class="entropy-legend card">
+        <div class="entropy-legend card mt-4">
             <div class="card-body">
                 <h4 class="card-title text-center">Légende de l'entropie</h4>
-                <ul>
-                    <li><span class="very-weak"></span> Très faible ( < 80 bits )</li>
-                    <li><span class="weak"></span> Faible ( < 100 bits )</li>
-                    <li><span class="medium"></span> Moyen ( < 110 bits )</li>
-                    <li><span class="good"></span> Bon ( < 120 bits )</li>
-                    <li><span class="strong"></span> Fort ( < 130 bits )</li>
-                    <li><span class="very-strong"></span> Très fort ( ≥ 130 bits )</li>
+                <ul class="list-unstyled">
+                    <li><span class="very-weak" aria-label="Très faible"></span> Très faible ( &lt; 80 bits )</li>
+                    <li><span class="weak" aria-label="Faible"></span> Faible ( &lt; 100 bits )</li>
+                    <li><span class="medium" aria-label="Moyen"></span> Moyen ( &lt; 110 bits )</li>
+                    <li><span class="good" aria-label="Bon"></span> Bon ( &lt; 120 bits )</li>
+                    <li><span class="strong" aria-label="Fort"></span> Fort ( &lt; 130 bits )</li>
+                    <li><span class="very-strong" aria-label="Très fort"></span> Très fort ( ≥ 130 bits )</li>
                 </ul>
                 <!-- Lien vers la page de la CNIL -->
                 <div class="text-center mt-3">
-                    <a href="{{ path('blog_show', {'slug': 'entropie'}) }}" target="_blank" class="btn btn-outline-info">
-                        Qu'est-ce que l'Entropie ?
+                    <a href="{{ path('blog_show', {'slug': 'entropie'}) }}" target="_blank" class="btn btn-outline-info" rel="noopener noreferrer">
+                        Qu'est-ce que l'Entropie ? <span class="visually-hidden">(ouverture dans une nouvelle fenêtre)</span>
                     </a>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Extension Chrome Banner -->
+    <div id="extension-popup" class="extension-banner-bottom" role="complementary" aria-label="Promotion extension Chrome">
+      <div class="extension-content">
+        🚀 Découvrez l'extension Chrome pour générer vos mots de passe plus rapidement !
+        <a href="https://chromewebstore.google.com/detail/g%C3%A9n%C3%A9rateur-de-passphrase/bhlgfoknmmhgpfoanhoemjccephcanjd" target="_blank" class="btn btn-sm btn-light ms-2" rel="noopener noreferrer">
+            Installer maintenant
+        </a>
+      </div>
+      <button id="popup-close" class="popup-close-btn" aria-label="Fermer la notification">×</button>
+    </div>
 
-<div id="extension-popup" class="extension-banner-bottom">
-  <div class="extension-content">
-    🚀 Découvrez l'extension Chrome pour générer vos mots de passe plus rapidement !
-    <a href="https://chromewebstore.google.com/detail/g%C3%A9n%C3%A9rateur-de-passphrase/bhlgfoknmmhgpfoanhoemjccephcanjd" target="_blank">Installer maintenant</a>
-  </div>
-  <button id="popup-close" class="popup-close-btn" aria-label="Fermer">×</button>
-</div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('password-generator-form');
+            const generateBtn = document.getElementById('generate-btn');
+            const loadingAnimation = document.getElementById('loading-animation');
+            const formMessages = document.getElementById('form-messages');
+
+            if (form) {
+                form.addEventListener('submit', function() {
+                    generateBtn.disabled = true;
+                    loadingAnimation.classList.remove('d-none');
+                    formMessages.innerHTML = ''; // Nettoyer les messages précédents
+                });
+            }
+
+            // Fermeture du banner d'extension
+            const popupClose = document.getElementById('popup-close');
+            if (popupClose) {
+                popupClose.addEventListener('click', function() {
+                    document.getElementById('extension-popup').style.display = 'none';
+                    localStorage.setItem('extension-banner-closed', 'true');
+                });
+                
+                // Ne pas afficher si l'utilisateur l'a fermé avant
+                if (localStorage.getItem('extension-banner-closed')) {
+                    document.getElementById('extension-popup').style.display = 'none';
+                }
+            }
+        });
+    </script>
 {% endblock %}

@@ -23,7 +23,7 @@ class PasswordGeneratorService
                     }
 
                     if ($data['majuscule_aleatoire']) { 
-                        $pos = random_int(0, strlen($mot) - 1);
+                        $pos = random_int(0, mb_strlen($mot, 'UTF-8') - 1);
                         $mot[$pos] = strtoupper($mot[$pos]);
                     }
 

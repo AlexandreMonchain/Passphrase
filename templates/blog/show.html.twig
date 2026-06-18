@@ -3,10 +3,16 @@
 {% block title %}Blog - {{ slug }}{% endblock %}
 
 {% block body %}
-    <div class="container d-flex flex-column align-items-center">
-        <div class="blog-content">
-            <div class="col-md">
-                {{ content|raw }}
+    <div class="container d-flex flex-column align-items-center py-5">
+        <div class="blog-content col-md-10 col-lg-8">
+            <article>
+                {{ content|sanitize_html|raw }}
+            </article>
+            <hr class="my-5">
+            <div class="text-center">
+                <a href="{{ path('app_home') }}" class="btn btn-outline-primary" role="button">
+                    ← Retour au générateur
+                </a>
             </div>
         </div>
     </div>

@@ -31,9 +31,15 @@
         private function loadCsv(): array
         {
             $mots = [];
+            if (!file_exists($this->csvPath)) {
+                return $mots; // Retourner un tableau vide si le fichier n'existe pas
+            }
+            
             if (($handle = fopen($this->csvPath, 'r')) !== false) {
                 while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
-                    $mots[] = $row[0]; // Ajouter chaque mot dans le tableau
+                    if (!empty($row[0])) {
+                        $mots[] = trim($row[0]); // Ajouter chaque mot et trimmer les espaces
+                    }
                 }
                 fclose($handle);
             }

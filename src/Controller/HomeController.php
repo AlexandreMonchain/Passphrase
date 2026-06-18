@@ -55,13 +55,16 @@ class HomeController extends AbstractController
             $passwordsWithEntropy = $passwordGeneratorService->generatePasswords($data, $mots);
 
             // Créer un cookie pour sauvegarder les préférences utilisateur
+            // Le flag 'secure' dépend de l'environnement: true en HTTPS, false en HTTP local/dev
+            $isSecure = $request->isSecure() || $_ENV['APP_ENV'] === 'prod';
+            
             $cookie = new Cookie(
                 'user_preferences',
                 json_encode($data),
                 time() + (3600 * 24 * 30),  // Expiration dans 30 jours
                 '/',                        // Path
                 null,                       // Domaine
-                true,                       // Sécurisé
+                $isSecure,                  // Sécurisé (adapté à l'environnement)
                 true,                       // HTTPOnly
                 false,                      // Raw
                 Cookie::SAMESITE_LAX        // SameSite policy
