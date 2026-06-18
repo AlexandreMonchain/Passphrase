@@ -8,6 +8,7 @@ RUN apk add --no-cache \
     bash \
     supervisor \
     composer \
+    unzip \
     icu-dev \
     libxml2-dev \
     oniguruma-dev \
@@ -23,7 +24,7 @@ WORKDIR /app
 
 # Build arguments
 ARG GIT_REPO=https://github.com/AlexandreMonchain/Passphrase.git
-ARG GIT_BRANCH=main
+ARG GIT_BRANCH=dev
 
 # Clone repository
 RUN echo "Cloning repository..." && \
@@ -31,8 +32,18 @@ RUN echo "Cloning repository..." && \
     git config --global --add safe.directory /app
 
 # Install PHP dependencies
-RUN echo "Installing dependencies..." && \
-    composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV COMPOSER_MEMORY_LIMIT=-1
+
+# Install PHP dependencies in a resilient way for CI/Portainer environments.
+RUN composer install \
+    --no-dev \
+    --prefer-dist \
+    --optimize-autoloader \
+    --no-interaction \
+    --no-scripts \
+    --no-progress \
+    --ignore-platform-reqs
 
 # Create necessary directories
 RUN echo "Creating directories..." && \

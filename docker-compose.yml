@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
       args:
         GIT_REPO: ${GIT_REPO:-https://github.com/AlexandreMonchain/Passphrase.git}
-        GIT_BRANCH: ${GIT_BRANCH:-main}
+        GIT_BRANCH: ${GIT_BRANCH:-dev}
     container_name: passphrase-web
     environment:
       APP_ENV: ${APP_ENV:-prod}
