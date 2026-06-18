@@ -32,7 +32,7 @@
         {
             $mots = [];
             if (($handle = fopen($this->csvPath, 'r')) !== false) {
-                while (($row = fgetcsv($handle)) !== false) {
+                while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
                     $mots[] = $row[0]; // Ajouter chaque mot dans le tableau
                 }
                 fclose($handle);
