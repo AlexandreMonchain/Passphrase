@@ -62,7 +62,7 @@ docker-compose up -d --build
 **Personnalisation (optionnel):**
 ```bash
 # Utiliser une autre branche
-GIT_BRANCH=develop docker-compose up -d --build
+GIT_BRANCH=dev docker-compose up -d --build
 
 # Utiliser un fork perso
 GIT_REPO=https://github.com/votreusername/Passphrase.git docker-compose up -d --build
@@ -90,17 +90,6 @@ docker-compose down -v
 4. 🧹 Warmup du cache Symfony
 5. ✅ Démarrage de Nginx + PHP-FPM
 6. 💾 Les données de cache/logs sont persistées dans des volumes Docker
-
-## Tests
-
-```bash
-php bin/phpunit
-```
-
-Ou avec Docker:
-```bash
-docker-compose exec web php bin/phpunit
-```
 
 ## API REST
 
@@ -156,8 +145,8 @@ Si vous rencontrez des problèmes ou avez des suggestions d'amélioration, n'hé
 - **Framework**: Symfony 7.4 LTS
 - **Runtime**: PHP 8.2+
 - **Frontend**: Twig + Bootstrap 5 + Stimulus.js + Custom CSS Design System
-- **Storage**: CSV file cache (1h refresh)
-- **Container**: Docker + Docker Compose (Nginx + PHP-FPM)
+- **Storage**: Fichier CSV
+- **Container**: Docker
 - **Design**: Responsive, Custom typography
 
 ### Structure du projet
@@ -193,7 +182,7 @@ Si vous rencontrez des problèmes ou avez des suggestions d'amélioration, n'hé
 
 ```bash
 docker-compose up -d --build
-# App dispo sur http://localhost:8000
+# App dispo sur http://ip_docker:8000
 ```
 
 Le conteneur écoute en HTTP interne (port 80, publié sur 8000).
