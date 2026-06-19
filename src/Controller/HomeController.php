@@ -16,23 +16,22 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(Request $request, CsvCacheService $csvCacheService, PasswordGeneratorService $passwordGeneratorService): Response
     {
-        // Récupérer les préférences utilisateur depuis le cookie
+        $defaults = [
+            'nb_mots'             => 2,
+            'separateur'          => 'random',
+            'majuscule_debut'     => true,
+            'majuscule_aleatoire' => false,
+            'longueur_nombre'     => 2,
+            'caractere_special'   => 'random',
+            'longueur_minimale'   => 12,
+            'caracteres_accentues'=> true,
+            'nb_resultats'        => 10,
+        ];
+
         $userPreferencesCookie = $request->cookies->get('user_preferences');
-        if ($userPreferencesCookie) {
-            $userPreferences = json_decode($userPreferencesCookie, true);
-        } else {
-            // Valeur par defaut si pas de cookie
-            $userPreferences = [
-                'nb_mots' => 2,
-                'separateur' => 'random',
-                'majuscule_debut' => true,
-                'majuscule_aleatoire' => false,
-                'longueur_nombre' => 2,
-                'caractere_special' => 'random',
-                'longueur_minimale' => 12,
-                'caracteres_accentues' => true,
-            ];
-        }
+        $userPreferences = $userPreferencesCookie
+            ? array_merge($defaults, json_decode($userPreferencesCookie, true) ?? [])
+            : $defaults;
 
         // Appel du formulaire dans src\Form et passage du tableau associatif pour le préremplir
         $form = $this->createForm(PasswordGenerationFormType::class, $userPreferences);
@@ -46,8 +45,7 @@ class HomeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            // Utilisation du service pour générer les mots de passe
-            $passwordsWithEntropy = $passwordGeneratorService->generatePasswords($data, $mots);
+            $passwordsWithEntropy = $passwordGeneratorService->generatePasswords($data, $mots, $data['nb_resultats'] ?? 10);
 
             // Créer un cookie pour sauvegarder les préférences utilisateur
             $isSecure = $request->isSecure();
@@ -82,7 +80,7 @@ class HomeController extends AbstractController
         }
 
         // Si le formulaire n'est pas soumis, générer les mots de passe par défaut
-        $passwordsWithEntropy = $passwordGeneratorService->generatePasswords($userPreferences, $mots);
+        $passwordsWithEntropy = $passwordGeneratorService->generatePasswords($userPreferences, $mots, $userPreferences['nb_resultats'] ?? 10);
 
         // Rendre la vue initiale avec les mots de passe par défaut
         return $this->render('home/index.html.twig', [

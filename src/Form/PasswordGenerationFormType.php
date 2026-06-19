@@ -87,7 +87,7 @@ class PasswordGenerationFormType extends AbstractType
                 ],
             ])
             ->add('longueur_nombre', ChoiceType::class, [
-                'label' => 'Nombre de chiffres à la fin du mot de passe',
+                'label' => 'Chiffres à la fin',
                 'choices' => [
                     '0 chiffre' => 0,
                     '1 chiffre' => 1,
@@ -134,6 +134,20 @@ class PasswordGenerationFormType extends AbstractType
                     new Assert\Type(
                         type: 'bool',
                         message: 'La valeur doit être un booléen.',
+                    ),
+                ],
+            ])
+            ->add('nb_resultats', ChoiceType::class, [
+                'label' => 'Nombre de résultats',
+                'choices' => [
+                    '6 mots de passe'  => 6,
+                    '10 mots de passe' => 10,
+                    '20 mots de passe' => 20,
+                ],
+                'constraints' => [
+                    new Assert\Choice(
+                        choices: [6, 10, 20],
+                        message: 'Nombre de résultats invalide.',
                     ),
                 ],
             ])

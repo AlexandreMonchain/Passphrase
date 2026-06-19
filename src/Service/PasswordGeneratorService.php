@@ -53,20 +53,20 @@ class PasswordGeneratorService
 
             } while (strlen($password) < $data['longueur_minimale']);
 
-            if ($withEntropy) {
-                // Calcul de l'entropie du mot de passe
-                $entropy = $this->calculateEntropy($password, !empty($data['caracteres_accentues']));
+            $length = mb_strlen($password, 'UTF-8');
 
-                // Ajouter le mot de passe et son entropie dans le tableau
+            if ($withEntropy) {
+                $entropy = $this->calculateEntropy($password, !empty($data['caracteres_accentues']));
                 $passwordsWithEntropy[] = [
                     'password' => $password,
-                    'entropy' => $entropy,
-                    'class' => $this->getBootstrapEntropyClass($entropy)
+                    'entropy'  => $entropy,
+                    'class'    => $this->getBootstrapEntropyClass($entropy),
+                    'length'   => $length,
                 ];
             } else {
-                // Si l'entropie n'est pas nécessaire, ajouter simplement le mot de passe
                 $passwordsWithEntropy[] = [
-                    'password' => $password
+                    'password' => $password,
+                    'length'   => $length,
                 ];
             }
         }

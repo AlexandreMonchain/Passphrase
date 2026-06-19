@@ -15,7 +15,7 @@ Une application web développée avec Symfony pour générer des mots de passe s
 - **Génération de mots de passe sécurisés** : Génération aléatoire de mots de passe robustes selon des critères définis par l'utilisateur.
 - **Calcul de l'entropie** : L'algorithme calcule l'entropie du mot de passe (mesure de la force), avec un retour visuel basé sur des classes Bootstrap pour indiquer la robustesse du mot de passe (faible, moyen, fort).
 - **API RESTful** : Une **API** est disponible pour permettre à d'autres applications de récupérer un ou plusieurs mots de passe via une requête HTTP. Les utilisateurs peuvent personnaliser la génération de mots de passe via les paramètres de l'API (nombre de mots de passe, longueur, caractères spéciaux, etc.).
-[Testez l'API avec ce lien.](https://passphrase.fr/api/passwords?count=1&nb_mots=2&longueur_minimale=12&separateur=random&majuscule_debut=true&majuscule_aleatoire=false&longueur_nombre=2&caractere_special=random&caracteres_accentues=false)
+[Testez l'API avec ce lien.](https://passphrase.fr/api/passwords?count=10&nb_mots=2&longueur_minimale=12&separateur=random&majuscule_debut=true&majuscule_aleatoire=false&longueur_nombre=2&caractere_special=random&caracteres_accentues=false)
 - **Cookie de sauvegarde des préférences** : Les préférences utilisateur (comme le nombre de mots, les séparateurs, etc.) sont sauvegardées dans un **cookie** afin de retrouver les mêmes paramètres lors de la prochaine utilisation de l'application.
 
 ## Extension Chrome
@@ -116,13 +116,13 @@ docker compose up -d --build
 curl "https://passphrase.fr/api/passwords?count=3&nb_mots=2&longueur_minimale=15"
 ```
 
-Réponse:
+Réponse :
 ```json
 {
   "passwords": [
-    "Economie-Etrier57:",
-    "Menton-Pancarte65!",
-    "Sieger-Distribuer52#"
+    { "password": "Economie-Etrier57:", "length": 18 },
+    { "password": "Menton-Pancarte65!", "length": 18 },
+    { "password": "Sieger-Distribuer52#", "length": 20 }
   ]
 }
 ```
@@ -131,7 +131,7 @@ Réponse:
 
 | Paramètre | Type | Défaut | Description |
 |-----------|------|--------|-------------|
-| `count` | int | 1 | Nombre de passphrases (1-100) |
+| `count` | int | 6 | Nombre de passphrases (1-20) |
 | `nb_mots` | int | 2 | Mots par passphrase (2-7) |
 | `longueur_minimale` | int | 12 | Longueur min (8-50) |
 | `separateur` | string | random | Séparateur (-, _, *, random) |
@@ -141,15 +141,15 @@ Réponse:
 | `caractere_special` | string | random | Type spéciaux (random, none, !@#) |
 | `caracteres_accentues` | bool | true | Inclure accents |
 
+> **Limite** : 100 requêtes par minute par IP. HTTP 429 au-delà.
+
 ### Intégration JavaScript
 
 ```javascript
 fetch("https://passphrase.fr/api/passwords?count=5&nb_mots=3")
   .then(res => res.json())
-  .then(data => console.log(data.passwords));
+  .then(data => data.passwords.forEach(p => console.log(p.password)));
 ```
-
-**CORS activé** ✅ — Utilisez l'API depuis vos applications web!
 
 ## Contribution
 
@@ -181,10 +181,11 @@ Si vous rencontrez des problèmes ou avez des suggestions d'amélioration, n'hé
 
 ## Performance & Sécurité
 
-- ✅ Cache HTTP headers
-- ✅ CSP (Content Security Policy) headers
-- ✅ CSRF protection
+- ✅ CSRF protection (Symfony stateless tokens)
 - ✅ XSS protection (Twig auto-escaping)
+- ✅ Génération cryptographique (`random_int`, CSPRNG)
+- ✅ Rate limiting API (100 req/min par IP)
+- ✅ Validation stricte des entrées (formulaire + API)
 
 ## Déploiement en production
 

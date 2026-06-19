@@ -49,8 +49,8 @@
                             <tr>
                                 <td><code>count</code></td>
                                 <td>int</td>
-                                <td>1</td>
-                                <td>Nombre de passphrases à générer (1-100)</td>
+                                <td>6</td>
+                                <td>Nombre de passphrases à générer (1-20)</td>
                             </tr>
                             <tr>
                                 <td><code>nb_mots</code></td>
@@ -108,13 +108,13 @@
                     <h2 class="card-title" id="response">
                         <i class="fas fa-exchange-alt"></i> Format de réponse
                     </h2>
-                    <p>La réponse est au format JSON:</p>
+                    <p>La réponse est au format JSON. Chaque entrée contient le mot de passe et sa longueur en caractères :</p>
                     <div class="api-code-block">
                         <pre><code>{
   "passwords": [
-    "Economie-Etrier57:",
-    "Menton-Pancarte65!",
-    "Sieger-Distribuer52#"
+    { "password": "Economie-Etrier57:", "length": 18 },
+    { "password": "Menton-Pancarte65!", "length": 18 },
+    { "password": "Sieger-Distribuer52#", "length": 20 }
   ]
 }</code></pre>
                     </div>
@@ -159,20 +159,19 @@ print(passwords)</code></pre>
                         <i class="fas fa-sticky-note"></i> Notes importantes
                     </h2>
                     <ul class="api-notes">
-                        <li>L'API est <strong>sans limite</strong> et <strong>sans authentification</strong></li>
+                        <li>L'API est <strong>sans authentification</strong>, limitée à <strong>100 requêtes par minute par IP</strong> (HTTP 429 au-delà)</li>
                         <li>Les passphrases sont générées à partir d'une liste de mots français de référence</li>
                         <li>L'entropie n'est pas retournée par l'API (voir l'interface web)</li>
                         <li>Les requêtes sont traitées synchronement et répondent rapidement (&lt;100ms)</li>
-                        <li>CORS est activé pour les requêtes cross-origin depuis les navigateurs</li>
-                        <li>Pensez à nous citer si vous l'utilisez dans vos projets! 🤗</li>
+                        <li>Pensez à nous citer si vous l'utilisez dans vos projets ! 🤗</li>
                     </ul>
 
                     <hr class="my-4">
 
                     <div class="api-test-section">
                         <h3>Vous voulez tester?</h3>
-                        <p>Cliquez sur le bouton ci-dessous pour générer 5 passphrases directement:</p>
-                        <a href="{{ path('api_generate_passwords') }}?count=5&nb_mots=2&longueur_minimale=12" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                        <p>Cliquez sur le bouton ci-dessous pour générer 10 passphrases directement:</p>
+                        <a href="{{ path('api_generate_passwords') }}?count=10&nb_mots=2&longueur_minimale=12" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
                             <i class="fas fa-play"></i> Tester l'API maintenant
                         </a>
                     </div>

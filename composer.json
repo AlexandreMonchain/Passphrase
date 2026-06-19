@@ -17,6 +17,7 @@
         "symfony/framework-bundle": "7.4.*",
         "symfony/intl": "7.4.*",
         "symfony/monolog-bundle": "^3.0",
+        "symfony/rate-limiter": "7.4.*",
         "symfony/runtime": "7.4.*",
         "symfony/security-bundle": "7.4.*",
         "symfony/string": "7.4.*",

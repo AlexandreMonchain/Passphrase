@@ -7,21 +7,31 @@ use App\Service\CsvCacheService;
 use App\Service\PasswordGeneratorService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
+use Symfony\Component\Routing\Annotation\Route;
 
 class ApiPasswordController extends AbstractController
 {
     #[Route('/api/passwords', name: 'api_generate_passwords', methods: ['GET'])]
-    public function getGeneratedPasswords(Request $request, CsvCacheService $csvCacheService, PasswordGeneratorService $passwordGeneratorService): JsonResponse
+    public function getGeneratedPasswords(Request $request, CsvCacheService $csvCacheService, PasswordGeneratorService $passwordGeneratorService, RateLimiterFactory $apiPasswordsLimiter): JsonResponse
     {
+        $limiter = $apiPasswordsLimiter->create($request->getClientIp() ?? 'unknown');
+        if (!$limiter->consume(1)->isAccepted()) {
+            return (new JsonResponse(
+                ['error' => 'Trop de requêtes. Limite : 100 requêtes par minute par IP.'],
+                Response::HTTP_TOO_MANY_REQUESTS
+            ))->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+        }
+
         $validSeparateurs    = ['random', '-', '_', ' ', '*', '/', '+'];
         $validCaracteresSpec = ['random', 'none', '$', '!', '#', '?', '-', '+', '@', ',', ';', ':', '*'];
 
         $nbMots           = max(2, min(7,  (int) $request->query->get('nb_mots', 2)));
         $longueurMinimale = max(8, min(50, (int) $request->query->get('longueur_minimale', 12)));
         $longueurNombre   = max(0, min(5,  (int) $request->query->get('longueur_nombre', 2)));
-        $count            = max(1, min(20, (int) $request->query->get('count', 1)));
+        $count            = max(1, min(20, (int) $request->query->get('count', 6)));
 
         $separateur = $request->query->get('separateur', 'random');
         if (!in_array($separateur, $validSeparateurs, true)) {

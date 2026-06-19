@@ -19,8 +19,19 @@
                 <div id="form-messages" role="alert" aria-live="polite" aria-atomic="true"></div>
 
                 <!-- Mots de passe générés -->
-                <div id="generated-passwords" class="mb-4">
+                <div id="generated-passwords" class="mb-3">
                     {% include 'home/_generated_passwords.html.twig' %}
+                </div>
+
+                <!-- Bouton de génération + loading (hors du formulaire, lié par form="...") -->
+                <div class="mb-4 text-center">
+                    {{ form_widget(form.generate, {'attr': {'class': 'btn btn-primary btn-lg', 'form': 'password-generator-form', 'aria-label': 'Générer des mots de passe'}}) }}
+                    <div id="loading-animation" class="d-none mt-3" role="status" aria-live="polite">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Génération en cours...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Génération en cours...</p>
+                    </div>
                 </div>
 
                 <!-- Formulaire de génération -->
@@ -30,19 +41,6 @@
                     <h2 class="card-title">
                         <i class="fas fa-sliders-h"></i> Personnalisation
                     </h2>
-
-                    <!-- Bouton de génération principal -->
-                    <div class="mb-4 text-center">
-                        {{ form_widget(form.generate, {'attr': {'class': 'btn btn-primary btn-lg', 'id': 'generate-btn', 'aria-label': 'Générer des mots de passe'}}) }}
-                    </div>
-
-                    <!-- Animation de chargement -->
-                    <div id="loading-animation" class="text-center d-none" role="status" aria-live="polite">
-                        <div class="spinner-border" role="status">
-                            <span class="visually-hidden">Génération en cours...</span>
-                        </div>
-                        <p class="mt-3 text-muted">Génération en cours...</p>
-                    </div>
 
                     <!-- Grille de formulaire -->
                     <div class="row gy-3">
@@ -65,24 +63,33 @@
                         <!-- Ligne 2: Longueur minimale -->
                         <div class="col-12">
                             <div class="mb-3">
-                                {{ form_label(form.longueur_minimale, null, {'label_attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(form.longueur_minimale, {'attr': {'class': 'form-control', 'min': '8', 'max': '50', 'type': 'range'}}) }}
-                                <small class="form-text">Longueur minimale: 8 à 50 caractères</small>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    {{ form_label(form.longueur_minimale, null, {'label_attr': {'class': 'form-label mb-0'}}) }}
+                                    <span class="fw-semibold" id="longueur-display">{{ form.longueur_minimale.vars.value }}</span>
+                                </div>
+                                {{ form_widget(form.longueur_minimale, {'attr': {'class': 'form-range', 'min': '8', 'max': '50'}}) }}
                             </div>
                         </div>
 
-                        <!-- Ligne 3: Longueur nombres et Caractères spéciaux -->
-                        <div class="col-md-6">
+                        <!-- Ligne 3: Longueur nombres, Caractères spéciaux et Nombre de résultats -->
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 {{ form_label(form.longueur_nombre, null, {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(form.longueur_nombre, {'attr': {'class': 'form-control'}}) }}
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 {{ form_label(form.caractere_special, null, {'label_attr': {'class': 'form-label'}}) }}
                                 {{ form_widget(form.caractere_special, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                {{ form_label(form.nb_resultats, null, {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.nb_resultats, {'attr': {'class': 'form-control'}}) }}
                             </div>
                         </div>
 

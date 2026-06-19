@@ -186,18 +186,19 @@ main.main-content { flex: 1; padding: 2rem 1rem; }
 .password-card-compact {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 0.55rem;
+    justify-content: center;
     background: var(--color-bg-light);
     border: 1px solid var(--color-border);
     border-radius: 11px;
     padding: 0.52rem 0.7rem;
     min-height: 66px;
+    transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
 
 .password-card-compact:hover {
     background: var(--color-bg);
-    border-color: #cfd4ff;
+    border-color: var(--color-primary);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
 }
 
 .password-main-compact {
@@ -207,7 +208,6 @@ main.main-content { flex: 1; padding: 2rem 1rem; }
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding-left: 0.45rem;
 }
 
 .password-value-compact {
@@ -226,26 +226,6 @@ main.main-content { flex: 1; padding: 2rem 1rem; }
     padding: 0.16rem 0.48rem !important;
 }
 
-.copy-btn-round {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    border-radius: 50% !important;
-    border: 1px solid var(--color-border) !important;
-    background: #fff !important;
-    color: var(--color-text-secondary) !important;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 !important;
-    flex-shrink: 0;
-}
-
-.copy-btn-round:hover {
-    color: var(--color-primary) !important;
-    border-color: #cfd4ff !important;
-    transform: translateY(-1px);
-}
 
 @media (max-width: 768px) {
     .password-grid-2cols {
