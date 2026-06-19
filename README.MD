@@ -59,6 +59,16 @@ APP_SECRET=votre_secret_ici docker compose up -d --build
 
 **Prérequis**: Docker 20.10+, Docker Compose v2
 
+**Variables d'environnement :**
+
+| Variable | Obligatoire | Défaut | Description |
+|----------|-------------|--------|-------------|
+| `APP_SECRET` | ✅ | — | Clé secrète Symfony (sessions, CSRF). Chaîne aléatoire longue. |
+| `GIT_BRANCH` | | `main` | Branche GitHub à cloner au build |
+| `GIT_REPO` | | repo officiel | URL du dépôt (utile pour un fork) |
+| `PORT` | | `8000` | Port exposé sur la machine hôte |
+| `TRUSTED_PROXIES` | | *(vide)* | IP(s) du reverse proxy. Nécessaire pour que Symfony détecte HTTPS derrière Traefik/Nginx/Caddy et que les cookies `Secure` fonctionnent correctement. Ex: `127.0.0.1` ou `REMOTE_ADDR` |
+
 **Personnalisation (optionnel):**
 ```bash
 # Utiliser la branche dev
@@ -69,6 +79,9 @@ GIT_REPO=https://github.com/votreusername/Passphrase.git APP_SECRET=votre_secret
 
 # Changer le port d'écoute (défaut: 8000)
 PORT=9000 APP_SECRET=votre_secret_ici docker compose up -d --build
+
+# Derrière un reverse proxy HTTPS (Traefik, Nginx, Caddy...)
+TRUSTED_PROXIES=REMOTE_ADDR APP_SECRET=votre_secret_ici docker compose up -d --build
 ```
 
 **Commandes utiles:**

@@ -13,6 +13,7 @@ services:
       APP_ENV: prod
       APP_DEBUG: "0"
       APP_SECRET: ${APP_SECRET:?APP_SECRET is required}
+      TRUSTED_PROXIES: ${TRUSTED_PROXIES:-}
 
     ports:
       - "${PORT:-8000}:80"
