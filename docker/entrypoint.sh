@@ -11,12 +11,12 @@ chmod -R ug+rwX var
 
 echo "🧹 Clearing Symfony cache..."
 
-su-exec www-data php bin/console cache:clear \
+php bin/console cache:clear \
     --env=prod \
     --no-debug \
     --no-interaction
 
-su-exec www-data php bin/console cache:warmup \
+php bin/console cache:warmup \
     --env=prod \
     --no-debug \
     --no-interaction
