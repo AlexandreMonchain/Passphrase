@@ -6,11 +6,12 @@ RUN apk add --no-cache \
     nginx \
     bash \
     supervisor \
-    composer \
     unzip \
+    zip \
     su-exec \
     icu-dev \
     libxml2-dev \
+    libzip-dev \
     oniguruma-dev \
     sqlite-dev \
     $PHPIZE_DEPS \
@@ -19,8 +20,11 @@ RUN apk add --no-cache \
         mbstring \
         pdo_sqlite \
         pdo_mysql \
-        xml
+        xml \
+        zip \
+        ctype
 
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 
 ARG GIT_REPO=https://github.com/AlexandreMonchain/Passphrase.git
