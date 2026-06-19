@@ -110,19 +110,11 @@ class PasswordGeneratorService
 
     public function getBootstrapEntropyClass(float $entropy): string
     {
-        if ($entropy < 80) {
-            return 'very-weak';
-        } elseif ($entropy < 100) {
-            return 'weak';
-        } elseif ($entropy < 110) {
-            return 'medium';
-        } elseif ($entropy < 120) {
-            return 'good';
-        } elseif ($entropy < 130) {
-            return 'strong';
-        } else {
-            return 'very-strong';
-        }
+        if ($entropy < 80)  return 'very-weak';
+        if ($entropy < 100) return 'weak';
+        if ($entropy < 120) return 'medium';
+        if ($entropy < 140) return 'good';
+        return 'very-strong';
     }
 
     private function removeAccents(string $str): string

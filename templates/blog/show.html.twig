@@ -1,26 +1,28 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Blog - {{ slug }}{% endblock %}
+{% block title %}Blog — Sécurité des mots de passe · Passphrase{% endblock %}
 
 {% block body %}
     <section class="hero-section">
-        <div class="hero-icon">📚</div>
-        <h1 class="hero-title">Blog Passphrase</h1>
-        <p class="hero-subtitle">Articles et guides sur la sécurité des mots de passe</p>
+        <div class="hero-icon">📖</div>
+        <h1 class="hero-title">Blog</h1>
+        <p class="hero-subtitle">Sécurité, cryptographie et bonnes pratiques</p>
     </section>
 
-    <div class="container">
+    <div class="container-lg pb-5">
         <div class="row justify-content-center">
-            <div class="col-lg-8">
+            <div class="col-12 col-xl-10">
+
                 <article class="card-modern blog-content">
                     {{ content|sanitize_html|raw }}
                 </article>
 
-                <div class="mt-5 text-center">
-                    <a href="{{ path('app_home') }}" class="btn btn-primary">
+                <div class="mt-4 text-center">
+                    <a href="{{ path('app_home') }}" class="btn btn-outline-primary">
                         <i class="fas fa-arrow-left"></i> Retour au générateur
                     </a>
                 </div>
+
             </div>
         </div>
     </div>

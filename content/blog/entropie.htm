@@ -1,120 +1,315 @@
-<h1>Comprendre l'Entropie des Mots de Passe</h1>
+<h1>L'entropie des mots de passe : ce que ce chiffre veut vraiment dire</h1>
 
 <p>
-    Lorsque vous utilisez notre générateur de phrases de passe, vous avez peut-être remarqué un indicateur d’entropie associé à chaque mot de passe. Mais qu’est-ce que l’entropie, et pourquoi est-elle essentielle pour protéger vos comptes en ligne ?
+    Quand Passphrase affiche "141 bits" sous votre mot de passe, qu'est-ce que ça signifie ? Est-ce vraiment fiable ? Et pourquoi ce chiffre peut-il être à la fois honnête et trompeur selon le contexte ? Cet article répond franchement à ces questions — y compris aux parties qui fâchent.
 </p>
 
 <p style="text-align: center;">
-    <img src="/images/blog_entropie.png" width="100%" alt="Image d'illustration">
+    <img src="/images/blog_entropie.png" width="100%" alt="Illustration entropie">
 </p>
 
-<h2>Qu’est-ce que l’entropie ?</h2>
+<h2>1. Qu'est-ce que l'entropie ?</h2>
 
 <p>
-    L’entropie est une mesure qui évalue à quel point un mot de passe est difficile à deviner. En d’autres termes, elle représente le niveau de complexité et d’imprévisibilité de votre mot de passe. Plus l’entropie est élevée, plus votre mot de passe est sécurisé contre les attaques.
-</p>
-
-<h2>Comment l'entropie est-elle calculée ?</h2>
-
-<p>
-    La formule de calcul de l'entropie est la suivante :
+    L'entropie d'un mot de passe mesure la <strong>taille de l'espace de recherche</strong> qu'un attaquant doit parcourir pour le trouver par force brute. En bits : si un mot de passe a <em>n</em> bits d'entropie, l'attaquant doit en moyenne tester 2<sup>n−1</sup> combinaisons.
 </p>
 
 <p>
-    <strong>Entropie = Nombre de caractères × log₂(taille de l’ensemble de caractères)</strong>
+    Un exemple concret : 100 bits d'entropie → 2<sup>100</sup> ≈ 10<sup>30</sup> combinaisons. Même avec un cluster de GPU capables de tester un milliard de mots de passe par seconde, il faudrait des milliards de fois l'âge de l'univers. C'est hors de portée de n'importe quel attaquant, pour toujours.
 </p>
+
+<h2>2. Comment Passphrase calcule l'entropie</h2>
+
+<p>
+    La formule utilisée est :
+</p>
+
+<p>
+    <strong>Entropie = longueur × log₂(taille du jeu de caractères)</strong>
+</p>
+
+<p>
+    Elle identifie les types de caractères présents dans votre mot de passe et suppose qu'un attaquant doit essayer toutes les combinaisons possibles de ces caractères, sans rien savoir d'autre.
+</p>
+
+<h3>Exemple de calcul — "Mélodie/Déboussoler18*"</h3>
 
 <ul>
-    <li><strong>Nombre de caractères</strong> : C'est le nombre total de caractères qui composent le mot de passe.</li>
-    <li><strong>Taille de l’ensemble de caractères</strong> : Cela représente la diversité des caractères utilisés. Plus vous utilisez de types de caractères (minuscules, majuscules, chiffres, symboles), plus l’entropie augmente.</li>
-</ul>
-
-<h3>Exemples de calcul</h3>
-
-<h4>1. Mot de passe avec une diversité maximale :</h4>
-<p>
-    Prenons le mot de passe <strong>9$g3c55r@D}TF%n6Ge{P</strong>. Il utilise des lettres majuscules, des lettres minuscules, des chiffres et des caractères spéciaux, avec une diversité maximale de 94 possibilités (26 minuscules + 26 majuscules + 10 chiffres + 32 symboles).
-</p>
-
-<p>
-    <strong>Calcul de l'entropie</strong> : 
-</p>
-
-<ul>
-    <li>Taille de l’ensemble de caractères = 94</li>
-    <li>Entropie = 20 × log₂(94)</li>
-    <li>log₂(94) ≈ 6.555</li>
-    <li>Entropie = 20 x 6.555 ≈ 131.09</li>
+    <li>Longueur : 22 caractères</li>
+    <li>Types de caractères : minuscules (26) + majuscules (26) + chiffres (10) + spéciaux (8) + séparateurs (6) + accentués (11) = <strong>87</strong></li>
+    <li>Entropie = 22 × log₂(87) = 22 × 6,44 ≈ <strong>141 bits</strong></li>
 </ul>
 
 <p>
-    Ce mot de passe est extrêmement sécurisé. Cependant malgré sa complexité il y a peu de chance que vous l'utilisiez si vous devez le taper au quotidien. C'est la raison d'exister de ce site.
+    Ce résultat est juste dans un scénario précis : l'attaquant ne sait pas d'où vient le mot de passe et doit tout essayer caractère par caractère. Ce scénario est le plus probable — et c'est pourquoi ce calcul reste pertinent. Mais il existe un autre scénario, moins probable mais bien réel.
 </p>
 
-<h4>2. Phrase de passe generée ici :</h4>
-<br/>
+<h2>3. Le principe de Kerckhoffs — "Celui qui sait"</h2>
+
 <p>
-    Considérons <strong>Mélodie/Déboussoler18*</strong> et décomposons le calcul de son entropie :
+    En cryptographie, le <strong>principe de Kerckhoffs</strong> (1883) énonce que la sécurité d'un système ne doit jamais reposer sur le secret de l'algorithme — uniquement sur le secret de la clé.
 </p>
+
+<p>
+    Traduit pour nos mots de passe : supposons qu'un attaquant sache exactement comment fonctionne Passphrase, connaisse notre dictionnaire de 7 446 mots français et la structure de génération. Il n'a plus besoin d'essayer toutes les combinaisons de caractères. Il peut attaquer directement l'espace combinatoire réel du générateur :
+</p>
+
+<table class="table table-bordered table-sm mt-3 mb-3">
+    <thead class="table-primary">
+        <tr>
+            <th>Composant (configuration : 2 mots, séparateur aléatoire, 2 chiffres, 1 spécial)</th>
+            <th>Nombre de combinaisons</th>
+            <th>Bits</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>2 mots tirés du dictionnaire (7 446 × 7 446)</td>
+            <td>~55 millions</td>
+            <td>2 × log₂(7 446) = 25,7</td>
+        </tr>
+        <tr>
+            <td>Séparateur parmi 6 choix</td>
+            <td>6</td>
+            <td>log₂(6) = 2,6</td>
+        </tr>
+        <tr>
+            <td>2 chiffres (00 à 99)</td>
+            <td>100</td>
+            <td>log₂(100) = 6,6</td>
+        </tr>
+        <tr>
+            <td>Caractère spécial parmi 8 choix</td>
+            <td>8</td>
+            <td>log₂(8) = 3,0</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr class="fw-bold">
+            <td>Total</td>
+            <td>~266 milliards</td>
+            <td><strong>~38 bits</strong></td>
+        </tr>
+    </tfoot>
+</table>
+
+<p>
+    <strong>141 bits affichés → ~38 bits réels si l'attaquant connaît l'outil.</strong> C'est un facteur de réduction de 3,7×.
+</p>
+
+<p>
+    Est-ce catastrophique ? Pour une attaque en ligne avec verrouillage de compte, non — même 38 bits est impossible à forcer en ligne. Pour une attaque hors-ligne après exfiltration d'une base de hachages (scénario NTDS.dit sur Active Directory par exemple), 38 bits reste faible face à un GPU moderne capable de tester des milliards de combinaisons par seconde. C'est précisément pourquoi le nombre de mots doit être adapté à l'enjeu, et pourquoi les seuils de notre échelle sont intentionnellement stricts — voir section 6.
+</p>
+
+<h2>4. Comparaison avec un mot de passe humain classique</h2>
+
+<p>
+    Examinons "Lucas2009!" — le type de mot de passe que beaucoup d'utilisateurs créent (prénom d'un proche + année de naissance + caractère spécial).
+</p>
+
+<h3>Entropie théorique de "Lucas2009!" selon la formule :</h3>
+
 <ul>
-    <li>Longueur de la passphrase : 22 caractères </li>
-    <li>Taille de l’ensemble de caractères = 26 (minuscules) + 26 (majuscules) + 10 (chiffres) + 8 (caractères spéciaux) + 6 (séparateurs) + 11 (caractères accentués) = 87 possibilités.</li>
+    <li>Longueur : 10 caractères</li>
+    <li>Types de caractères : minuscules (26) + majuscules (26) + chiffres (10) + spéciaux (8) = 70</li>
+    <li>Entropie = 10 × log₂(70) ≈ <strong>61 bits</strong></li>
+</ul>
+
+<h3>Entropie réelle de "Lucas2009!" :</h3>
+
+<p>
+    La formule suppose un attaquant aveugle qui tente toutes les combinaisons de caractères. En réalité, les attaquants utilisent des listes de mots courants, des prénoms, des dates, et des règles de transformation connues — c'est ce qu'on appelle les attaques par dictionnaire. Et avant même de lancer une attaque, un minimum de <strong>recherche en sources ouvertes</strong> (LinkedIn, réseaux sociaux, annuaires d'entreprise, fuites de données passées) permet de collecter des éléments personnels sur n'importe quelle cible — prénom d'un enfant, année de naissance, ville — sans jamais avoir eu de contact direct avec elle. C'est l'ingénierie sociale appliquée aux mots de passe.
+</p>
+
+<ul>
+    <li>"Lucas" : prénom parmi ~5 000 prénoms français courants → ~12 bits ; récupérable sur un profil Facebook public en quelques secondes</li>
+    <li>"2009" : année dans une plage restreinte autour d'une naissance probable → ~4 bits ; souvent déduit d'un post d'anniversaire ou d'une mention dans un profil</li>
+    <li>"!" : symbole parmi les 3-4 plus utilisés (!, @, #, .) → ~2 bits ; règle d'ajout si prévisible qu'elle est intégrée dans tous les outils de cracking</li>
+    <li>Structure "PrénomAnnée!" : convention tellement répandue qu'elle ne contribue pas d'entropie supplémentaire</li>
 </ul>
 
 <p>
-    <strong>Calcul de l'entropie</strong> :
+    <strong>Résultat : ~18 bits face à une attaque par dictionnaire générique, ~8 bits après quelques minutes de recherche sur la cible.</strong>
 </p>
 
-<ul>
-    <li>Entropie = 22 (longueur de la phrase) × log₂(87)</li>
-    <li>log₂(87) ≈ 6.45</li>
-    <li>Entropie = 22 × 6.45 ≈ 141.74</li>
-</ul>
+<h3>Tableau comparatif</h3>
+
+<table class="table table-bordered table-sm mt-3 mb-3">
+    <thead class="table-primary">
+        <tr>
+            <th>Mot de passe</th>
+            <th>Entropie formulaire</th>
+            <th>Entropie réelle (dictionnaire)</th>
+            <th>Entropie réelle (ingénierie sociale)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Lucas2009!</strong></td>
+            <td>~61 bits</td>
+            <td><strong>~18 bits</strong></td>
+            <td><strong>~8 bits</strong></td>
+        </tr>
+        <tr>
+            <td><strong>Mélodie/Déboussoler18*</strong><br><small class="text-muted">(outil inconnu de l'attaquant)</small></td>
+            <td>141 bits</td>
+            <td><strong>~141 bits</strong></td>
+            <td><strong>~141 bits</strong></td>
+        </tr>
+        <tr>
+            <td><strong>Mélodie/Déboussoler18*</strong><br><small class="text-muted">(outil connu de l'attaquant)</small></td>
+            <td>141 bits</td>
+            <td><strong>~38 bits</strong></td>
+            <td><strong>~38 bits</strong></td>
+        </tr>
+    </tbody>
+</table>
 
 <p>
-    Ce calcul montre que, même avec une longueur de 22 caractères, la diversité des types de caractères augmente l'entropie globale, assurant une meilleure sécurité.
+    Même dans le pire cas — un attaquant qui sait que vous utilisez ce générateur — vous restez à <strong>~38 bits contre ~8 bits</strong> pour "Lucas2009!" après ingénierie sociale. C'est 2<sup>30</sup> fois plus résistant, soit environ un milliard de fois. Et contrairement à "Lucas2009!", votre mot de passe ne contient aucune information personnelle exploitable : aucun profil LinkedIn, aucune fuite de données passée, aucun post sur les réseaux sociaux ne permettra de le deviner — d'où les valeurs identiques dans les deux colonnes "réelle" pour Passphrase.
 </p>
 
-<h2>Attention aux modèles de génération</h2>
 <p>
-    Il est essentiel de comprendre que l'utilisation de notre générateur de mots de passe ne garantit pas la sécurité de vos données. Chaque générateur de mots de passe utilise un modèle de génération qui peut potentiellement être exploité par un hacker. Par exemple, si vous utilisez toujours le même modèle pour générer vos mots de passe (2 mots séparés par une * avec 3 chiffres à la fin), un pirate si il parvient à identifier ce modèle, pourrait alors plus facilement pirater vos mots de passe.
+    Autre point important : la formule mathématique de l'entropie, bien qu'imparfaite, donne une image bien plus fidèle de la sécurité réelle que n'importe quel indicateur basé sur "complexité" ou "longueur". Un mot de passe "complexe" humain reste faible. Un mot de passe généré aléatoirement reste fort, même dans les pires hypothèses.
 </p>
 
-<h2>Gestionnaires de mots de passe</h2>
+<h2>5. Pour quoi est fait ce générateur ?</h2>
+
 <p>
-    Les gestionnaires de mots de passe sont des outils conçus pour stocker, générer et gérer les mots de passe de manière sécurisée. Ils vous permettent de créer des mots de passe complexes sans avoir à les mémoriser. La plupart des gestionnaires s'installent sur votre téléphone et permettent de saisir vos mots de passe en toute transparence sur tous vos appareils, facilitant ainsi leur utilisation.
+    Ce générateur couvre un périmètre très restreint : les rares mots de passe que vous devez <strong>taper de mémoire</strong>. Et même dans ce périmètre, le nombre de mots choisi doit être proportionnel à la criticité du compte et à la protection qui l'entoure.
 </p>
+
+<h3>Session Windows / Active Directory</h3>
 <p>
-    Lorsque vous utilisez un gestionnaire de mot de passe, vous n'avez plus qu'un seul mot de passe à retenir, assurez vous qu'il présente un haut niveau d'entropie et qu'il soit mémorisable. Ce site est fait pour ça !
+    Un compte Windows verrouillé après 3 à 5 tentatives bénéficie déjà d'une protection anti-brute-force native. Dans ce contexte, <strong>2 mots suffisent</strong> — l'espace combinatoire est bien supérieur à ce qu'une attaque en ligne peut parcourir, et la contrainte de mémorisation est réelle pour des utilisateurs qui saisissent ce mot de passe plusieurs fois par jour.
+</p>
+
+<h3>Mot de passe maître d'un gestionnaire de mots de passe</h3>
+<p>
+    C'est le cas d'usage le plus critique, et il mérite d'être traité comme tel. Ce mot de passe protège l'ensemble de vos accès. <strong>Le minimum raisonnable est 4 mots.</strong> Le coffre-fort est une cible de choix pour un attaquant qui mettrait la main sur votre base chiffrée — plus le mot de passe est long, plus le chiffrement est solide. Cela dit, votre gestionnaire devrait également être protégé par du <strong>MFA</strong> et de l'anti-brute-force : ce ne sont pas des options, c'est une exigence de base.
+</p>
+
+<h3>Règle générale : adaptez le nombre de mots à l'enjeu</h3>
+<p>
+    Plus le compte est critique et moins il bénéficie de protections périmétriques, plus il faut de mots. 2 mots pour un poste verrouillé rapidement, 3 mots minimum pour un accès sans politique de verrouillage stricte, 4 mots ou plus pour un coffre-fort ou tout accès à haute valeur.
+</p>
+
+<p>
+    Pour <strong>tout le reste</strong> — vos comptes en ligne, services, applications — utilisez un <strong>gestionnaire de mots de passe</strong> qui génère et stocke des mots de passe véritablement aléatoires de 20+ caractères. Ces mots de passe n'ont pas besoin d'être mémorisables. La section suivante vous oriente vers les meilleures solutions.
+</p>
+
+<p>
+    Un mot de passe généré ici <strong>ne doit pas être réutilisé</strong> sur plusieurs comptes. Ce n'est pas son rôle. Si vous le réutilisez, la compromission d'un service expose tous les autres.
+</p>
+
+<h2>6. Notre échelle d'entropie — des seuils intentionnellement stricts</h2>
+
+<p>
+    Les seuils affichés (<em>Très faible, Faible, Acceptable, Bon, Très fort</em>) sont délibérément plus élevés que les minimums recommandés par les standards internationaux.
+</p>
+
+<table class="table table-bordered table-sm mt-3 mb-3">
+    <thead class="table-primary">
+        <tr>
+            <th>Niveau</th>
+            <th>Seuil affiché par Passphrase</th>
+            <th>Référence externe</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Très faible</td>
+            <td>&lt; 80 bits</td>
+            <td>En-dessous du minimum NIST SP 800-63B (64 bits)</td>
+        </tr>
+        <tr>
+            <td>Faible</td>
+            <td>&lt; 100 bits</td>
+            <td>Zone NIST minimale</td>
+        </tr>
+        <tr>
+            <td>Acceptable</td>
+            <td>&lt; 120 bits</td>
+            <td>ANSSI recommande 80 bits — nous exigeons plus</td>
+        </tr>
+        <tr>
+            <td>Bon</td>
+            <td>&lt; 140 bits</td>
+            <td>EFF Diceware 6 mots ≈ 77 bits — au-delà</td>
+        </tr>
+        <tr>
+            <td>Très fort</td>
+            <td>≥ 140 bits</td>
+            <td>ANSSI "fort" ≈ 100 bits — largement au-delà</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>
+    <strong>Pourquoi ces seuils sont-ils plus stricts que les normes ?</strong> Parce que l'entropie affichée suppose un attaquant aveugle, alors que l'entropie combinatoire réelle dépend uniquement de la structure du générateur — pas de la longueur des mots. Un mot de passe à 2 mots affiche par exemple 110 ou 141 bits selon la longueur des mots choisis, mais dans les deux cas l'espace combinatoire réel (si l'outil est connu) est identique : <strong>~38 bits</strong>. Les seuils élevés compensent cet écart pour que l'échelle reste honnête quel que soit le scénario.
+</p>
+
+<p>
+    Ces seuils ne sont pas issus d'un standard unique. Ils sont le résultat d'un raisonnement appliqué à notre modèle de menace spécifique. Nous préférons pousser les utilisateurs vers des mots de passe plus forts plutôt que d'afficher "Fort" pour des mots de passe qui ne l'auraient pas mérité si l'attaquant connaissait l'outil.
+</p>
+
+<h2>7. Ne divulguez pas l'outil — la discrétion fait partie de la sécurité</h2>
+
+<p>
+    Si vous utilisez ce générateur dans votre entreprise ou pour votre usage personnel, <strong>évitez d'en parler publiquement</strong>. Ce n'est pas de la paranoia — c'est de la cryptographie appliquée.
+</p>
+
+<p>
+    Comme nous l'avons montré : un attaquant qui sait que vos mots de passe viennent de Passphrase peut réduire l'espace de recherche d'un facteur 3,7. Ce n'est pas de la "sécurité par l'obscurité" au sens péjoratif du terme (cacher un algorithme défaillant). C'est l'utilisation d'un avantage informationnel légitime : l'attaquant ne connaît ni votre dictionnaire, ni votre structure de génération.
+</p>
+
+<p>
+    Pour comprendre la nuance : vous ne communiquez pas non plus le contenu de votre coffre-fort de mots de passe sous prétexte que "tout le monde sait que Bitwarden existe". Savoir qu'un outil existe ne permet pas de l'attaquer. Savoir que <em>vous</em> l'utilisez et connaître sa structure, si.
+</p>
+
+<p>
+    La discrétion sur vos outils et habitudes de sécurité fait partie intégrante de votre posture de sécurité. Elle ne compense pas un mauvais mot de passe — mais elle préserve la valeur d'un bon.
+</p>
+
+<h2>8. Gestionnaires de mots de passe</h2>
+
+<p>
+    Pour tout ce que vous ne tapez pas à la main, utilisez un gestionnaire de mots de passe. Il génère et stocke des mots de passe véritablement aléatoires de 20+ caractères sans limite de complexité. Vous n'avez qu'un seul mot de passe à retenir — celui du coffre-fort. <strong>Utilisez ce générateur pour lui trouver un bon mot de passe maître mémorisable, avec 4 mots minimum.</strong>
 </p>
 
 <h3>Pour les entreprises</h3>
 <ul>
+    <li><strong>Keeper</strong> :<br>
+        Solution complète, ergonomique et bien adaptée aux environnements d'entreprise. Déploiement centralisé, gestion des droits, MFA intégré, rapports d'audit. Compatible avec les politiques de sécurité les plus exigeantes. Solution payante.
+    </li>
     <li><strong>KeePass</strong> :<br>
-        Validé par l'ANSSI, KeePass est l'un des gestionnaires de mots de passe les plus fiables. Il n'est pas sujet aux fuites de données en ligne, car la base de données est stockée sur votre PC. Cependant, son fonctionnement reposant sur un coffre fort local rend sa gestion difficile en entreprise, surtout pour les utilisateurs moins expérimentés. Gros point positif : KeePass est gratuit.
+        Validé par l'ANSSI, KeePass est l'un des gestionnaires les plus fiables. Aucun risque de fuite en ligne car la base est stockée localement. Sa gestion reste plus complexe à déployer à grande échelle. Gratuit.
     </li>
     <li><strong>Lockpass</strong> :<br>
-        Une alternative validée par l'ANSSI, Lockpass est plus simple à mettre en œuvre et conviviale. Cette solution est payante.
+        Alternative validée par l'ANSSI, plus simple à mettre en œuvre et plus conviviale pour des utilisateurs non techniques. Solution payante.
     </li>
     <li><strong>Passbolt</strong> :<br>
-        Passbolt est similaire à Lockpass mais bien que cette solution soit Européenne elle n'est pas validé par l'ANSSI. Elle propose une approche différente en matière de chiffrement des mots de passe, ce qui en fait une option intéressante. Assez peu connu, je vous invite à vous renseigner ! 
+        Solution européenne open-source au chiffrement bout-en-bout. Non validée par l'ANSSI mais sérieuse et transparente. Intéressante si vous cherchez une alternative collaborative.
     </li>
 </ul>
 
 <h3>Pour les particuliers</h3>
 <ul>
-    <li><strong>Bitwarden</strong> :<br>
-        Selon mon expérience personnelle, Bitwarden est l'un des gestionnaires de mots de passe les plus agréables à utiliser pour les particuliers. Il dispose d'une version gratuite qui conviendra certainement à la majorité. 
+    <li><strong>Keeper</strong> :<br>
+        Si votre entreprise utilise Keeper, votre licence inclut souvent un compte personnel gratuit. Profitez-en : vous bénéficiez d'une solution professionnelle sur vos appareils personnels sans frais supplémentaires.
     </li>
-    <li><strong>Proton</strong> :<br>
-        Proton a récemment lancé son propre gestionnaire de mots de passe. Je ne l'ai pas personnellement testé mais la société Proton est bien connue pour ses solutions robustes et respectueuses de la vie privée. Si je devais changer c'est certainement cette solution que j'envisagerais... 
+    <li><strong>Bitwarden</strong> :<br>
+        L'un des gestionnaires les plus agréables à utiliser. Version gratuite complète, open-source, disponible sur tous les appareils. Un excellent choix pour commencer.
+    </li>
+    <li><strong>Proton Pass</strong> :<br>
+        Le gestionnaire de mots de passe de Proton, connu pour ses solutions respectueuses de la vie privée. À considérer si vous êtes déjà dans l'écosystème Proton Mail / Proton VPN.
     </li>
     <li><strong>KeePass</strong> :<br>
-        KeePass peut également être une alternative pour les particuliers qui ne souhaitent pas que leurs mots de passe soient stockés dans le cloud. Cependant, je déconseille cette option pour les utilisateurs néophytes en raison de la complexité de sa gestion.
+        Pour ceux qui ne souhaitent aucun stockage cloud. Déconseillé aux utilisateurs novices en raison de la complexité de la synchronisation entre appareils.
     </li>
 </ul>
 
 <div class="mt-4 p-3 bg-light border rounded">
-    <p class="mb-1"><strong>Auteur :</strong> Alexandre MONHAIN</p>
-    <p class="mb-0"><strong>Date de publication :</strong> 3 novembre 2024</p>
+    <p class="mb-1"><strong>Auteur :</strong> Alexandre MONCHAIN</p>
+    <p class="mb-0"><strong>Dernière mise à jour :</strong> Juin 2026</p>
 </div>

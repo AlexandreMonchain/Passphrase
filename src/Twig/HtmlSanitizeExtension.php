@@ -10,7 +10,7 @@ class HtmlSanitizeExtension extends AbstractExtension
     /**
      * Tags HTML sûrs autorisés pour affichage du contenu blog
      */
-    private const ALLOWED_TAGS = '<p><br><strong><em><u><h1><h2><h3><h4><h5><h6><ul><ol><li><blockquote><a><img><div><span><code><pre>';
+    private const ALLOWED_TAGS = '<p><br><strong><em><u><sup><sub><h1><h2><h3><h4><h5><h6><ul><ol><li><blockquote><a><img><div><span><code><pre><small><table><thead><tbody><tfoot><tr><th><td><caption>';
 
     public function getFilters(): array
     {
