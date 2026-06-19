@@ -33,6 +33,13 @@ class HomeController extends AbstractController
             ? array_merge($defaults, json_decode($userPreferencesCookie, true) ?? [])
             : $defaults;
 
+        // Clamp des valeurs du cookie pour éviter qu'un cookie forgé déclenche une génération excessive
+        $userPreferences['nb_mots']          = max(2, min(7,  (int) ($userPreferences['nb_mots'] ?? 2)));
+        $userPreferences['longueur_minimale'] = max(8, min(50, (int) ($userPreferences['longueur_minimale'] ?? 12)));
+        $userPreferences['longueur_nombre']   = max(0, min(5,  (int) ($userPreferences['longueur_nombre'] ?? 2)));
+        $userPreferences['nb_resultats']      = in_array((int) ($userPreferences['nb_resultats'] ?? 10), [6, 10, 20])
+            ? (int) $userPreferences['nb_resultats'] : 10;
+
         // Appel du formulaire dans src\Form et passage du tableau associatif pour le préremplir
         $form = $this->createForm(PasswordGenerationFormType::class, $userPreferences);
         $form->handleRequest($request);

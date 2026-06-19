@@ -22,9 +22,11 @@ class PasswordGeneratorService
                         $mot = ucfirst($mot);
                     }
 
-                    if ($data['majuscule_aleatoire']) { 
+                    if ($data['majuscule_aleatoire']) {
                         $pos = random_int(0, mb_strlen($mot, 'UTF-8') - 1);
-                        $mot[$pos] = strtoupper($mot[$pos]);
+                        $mot = mb_substr($mot, 0, $pos, 'UTF-8')
+                             . mb_strtoupper(mb_substr($mot, $pos, 1, 'UTF-8'), 'UTF-8')
+                             . mb_substr($mot, $pos + 1, null, 'UTF-8');
                     }
 
                     if (empty($data['caracteres_accentues'])) {
@@ -51,7 +53,7 @@ class PasswordGeneratorService
                     $password .= $data['caractere_special'];
                 }
 
-            } while (strlen($password) < $data['longueur_minimale']);
+            } while (mb_strlen($password, 'UTF-8') < $data['longueur_minimale']);
 
             $length = mb_strlen($password, 'UTF-8');
 
@@ -82,7 +84,7 @@ class PasswordGeneratorService
     $has_lowercase = preg_match('/[a-z]/', $password);
     $has_uppercase = preg_match('/[A-Z]/', $password);
     $has_digits = preg_match('/[0-9]/', $password);
-    $has_special_chars = preg_match('/[\$\*\!\:\;\,\?\#]/', $password);
+    $has_special_chars = preg_match('/[\$\*\!\:\;\,\?\#\@]/', $password);
     $has_separators = preg_match('/[\-_ \*\/\+]/', $password);
     $has_accents = $accents ? preg_match('/[éèùàçâêëîïô]/i', $password) : 0;
 
