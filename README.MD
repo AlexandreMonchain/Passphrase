@@ -22,8 +22,8 @@ Une application web développée avec Symfony pour générer des mots de passe s
 
 Une extension Chrome est disponible pour accéder rapidement au générateur de mots de passe directement depuis votre navigateur.
 
-- [Voir l’extension sur le Chrome Web Store](https://chromewebstore.google.com/detail/g%C3%A9n%C3%A9rateur-de-passphrase/bhlgfoknmmhgpfoanhoemjccephcanjd)
-- [Code source de l’extension sur GitHub](https://github.com/AlexandreMonchain/PassphraseChromeExtension)
+- [Voir l'extension sur le Chrome Web Store](https://chromewebstore.google.com/detail/g%C3%A9n%C3%A9rateur-de-passphrase/bhlgfoknmmhgpfoanhoemjccephcanjd)
+- [Code source de l'extension sur GitHub](https://github.com/AlexandreMonchain/PassphraseChromeExtension)
 
 ## Installation locale
 
@@ -52,44 +52,46 @@ symfony server:start --no-tls
 
 ```bash
 # Démarrer le conteneur (clone + install + run automatique)
-docker-compose up -d --build
+APP_SECRET=votre_secret_ici docker compose up -d --build
 
 # Ouvrir http://localhost:8000
 ```
 
-**Prérequis**: Docker 20.10+, Docker Compose 1.29+
+**Prérequis**: Docker 20.10+, Docker Compose v2
 
 **Personnalisation (optionnel):**
 ```bash
-# Utiliser une autre branche
-GIT_BRANCH=dev docker-compose up -d --build
+# Utiliser la branche dev
+GIT_BRANCH=dev APP_SECRET=votre_secret_ici docker compose up -d --build
 
 # Utiliser un fork perso
-GIT_REPO=https://github.com/votreusername/Passphrase.git docker-compose up -d --build
+GIT_REPO=https://github.com/votreusername/Passphrase.git APP_SECRET=votre_secret_ici docker compose up -d --build
+
+# Changer le port d'écoute (défaut: 8000)
+PORT=9000 APP_SECRET=votre_secret_ici docker compose up -d --build
 ```
 
 **Commandes utiles:**
 ```bash
 # Voir les logs
-docker-compose logs -f web
+docker compose logs -f web
 
 # Accéder au container
-docker-compose exec web sh
+docker compose exec web sh
 
 # Arrêter
-docker-compose down
+docker compose down
 
-# Arrêter et supprimer les volumes (réinitialiser)
-docker-compose down -v
+# Rebuild complet (nouvelle version)
+docker compose up -d --build
 ```
 
 **Qu'est-ce qui se passe au démarrage:**
-1. 🔨 Build de l'image (télécharge PHP 8.2, Nginx, Supervisor)
-2. 📥 Clone depuis GitHub (repo propre, pas de fichiers locaux)
+1. 🔨 Build de l'image (télécharge PHP 8.4, Apache)
+2. 📥 Clone depuis GitHub (branche `main` par défaut)
 3. 📦 Installation des dépendances Composer
 4. 🧹 Warmup du cache Symfony
-5. ✅ Démarrage de Nginx + PHP-FPM
-6. 💾 Les données de cache/logs sont persistées dans des volumes Docker
+5. ✅ Démarrage d'Apache
 
 ## API REST
 
@@ -143,11 +145,10 @@ Si vous rencontrez des problèmes ou avez des suggestions d'amélioration, n'hé
 ## Architecture
 
 - **Framework**: Symfony 7.4 LTS
-- **Runtime**: PHP 8.2+
-- **Frontend**: Twig + Bootstrap 5 + Stimulus.js + Custom CSS Design System
-- **Storage**: Fichier CSV
-- **Container**: Docker
-- **Design**: Responsive, Custom typography
+- **Runtime**: PHP 8.2+ (8.4 dans Docker)
+- **Frontend**: Twig + Bootstrap 5 + Vanilla JS + Custom CSS Design System
+- **Storage**: Fichier CSV (dictionnaire de mots français)
+- **Container**: Docker + Apache
 
 ### Structure du projet
 
@@ -155,22 +156,18 @@ Si vous rencontrez des problèmes ou avez des suggestions d'amélioration, n'hé
 ├── src/
 │   ├── Controller/          # Routes et API
 │   ├── Service/             # Logique métier
-│   ├── Entity/              # Modèles
 │   └── Form/                # Formulaires Symfony
 ├── templates/               # Pages Twig
-├── public/assets/           # CSS/JS compilés
+├── public/assets/           # CSS/JS
 ├── config/                  # Configuration Symfony
-├── migrations/              # Migrations BD
-├── docker/                  # Configuration Docker
-├── Dockerfile              # Image PHP-FPM
-├── docker-compose.yml      # Services (Web + DB)
+├── docker/                  # Configuration Docker (Apache, entrypoint)
+├── Dockerfile               # Image PHP 8.4 + Apache
+├── docker-compose.yml       # Service Web
 └── tests/                   # Tests PHPUnit
 ```
 
 ## Performance & Sécurité
 
-- ✅ HTTP/2 support
-- ✅ Compression Gzip
 - ✅ Cache HTTP headers
 - ✅ CSP (Content Security Policy) headers
 - ✅ CSRF protection
@@ -181,7 +178,7 @@ Si vous rencontrez des problèmes ou avez des suggestions d'amélioration, n'hé
 ### Avec Docker (recommandé)
 
 ```bash
-docker-compose up -d --build
+APP_SECRET=votre_secret_ici docker compose up -d --build
 # App dispo sur http://ip_docker:8000
 ```
 

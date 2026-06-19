@@ -1,89 +1,88 @@
-$(document).ready(function () {
-    $('#password-generator-form').on('submit', function (e) {
-        e.preventDefault(); // Empêche le rechargement de la page
-        
-        // Désactiver le bouton et afficher l'animation de chargement
-        $('#generate-btn').prop('disabled', true);
-        $('#loading-animation').show();
+document.addEventListener('DOMContentLoaded', function () {
 
-        $.ajax({
-            url: '/',
-            method: 'POST',
-            data: $(this).serialize(), // Récupère les données du formulaire
-            success: function (response) {
-                $('#generated-passwords').html(response); // Met à jour la section des mots de passe
-            },
-            complete: function() {
-                // Réactiver le bouton et cacher l'animation après la réponse
-                $('#generate-btn').prop('disabled', false);
-                $('#loading-animation').hide();
-            }
+    // --- Soumission AJAX du formulaire ---
+    const form = document.getElementById('password-generator-form');
+    if (form) {
+        const generateBtn  = form.querySelector('[type="submit"]');
+        const loading      = document.getElementById('loading-animation');
+        const passwordsDiv = document.getElementById('generated-passwords');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            generateBtn.disabled = true;
+            loading.classList.remove('d-none');
+
+            fetch('/', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: new FormData(form),
+            })
+                .then(function (r) { return r.text(); })
+                .then(function (html) {
+                    passwordsDiv.innerHTML = html;
+                })
+                .finally(function () {
+                    generateBtn.disabled = false;
+                    loading.classList.add('d-none');
+                });
+        });
+    }
+
+    // --- Copie de mot de passe ---
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.copy-btn-round');
+        if (!btn) return;
+        e.preventDefault();
+
+        const password = btn.dataset.password;
+        if (!password) return;
+
+        navigator.clipboard.writeText(password).then(function () {
+            const original = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i>';
+            setTimeout(function () { btn.innerHTML = original; }, 2000);
         });
     });
 
-    // Fonctionnalité de copie
-    $(document).on('click', '.copy-btn', function(e) {
-        e.preventDefault();
-        var password = $(this).data('password');
-        var tempInput = $('<input>');
-        $('body').append(tempInput);
-        tempInput.val(password).select();
-        document.execCommand('copy');
-        tempInput.remove();
+    // --- Bouton réinitialisation des paramètres ---
+    const resetBtn = document.getElementById('load-defaults-btn');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', function () {
+            const fields = {
+                'password_generation_form_nb_mots':           { value: '2' },
+                'password_generation_form_longueur_minimale': { value: '12' },
+                'password_generation_form_separateur':        { value: 'random' },
+                'password_generation_form_longueur_nombre':   { value: '2' },
+                'password_generation_form_caractere_special': { value: 'random' },
+                'password_generation_form_majuscule_debut':        { checked: true },
+                'password_generation_form_majuscule_aleatoire':    { checked: false },
+                'password_generation_form_caracteres_accentues':   { checked: true },
+            };
 
-        // Feedback visuel pour informer que le mot de passe a été copié
-        $(this).html('<i class="fas fa-check"></i>'); // Change l'icône temporairement
-        var button = $(this);
-        setTimeout(function() {
-            button.html('<i class="fas fa-copy"></i>'); // Remet l'icône de copie après 2 secondes
-        }, 2000);
-    });
-});    
+            for (const [id, def] of Object.entries(fields)) {
+                const el = document.getElementById(id);
+                if (!el) continue;
+                if ('checked' in def) {
+                    el.checked = def.checked;
+                } else {
+                    el.value = def.value;
+                }
+            }
+        });
+    }
 
-//Bouton pour remettre les paramètres par defaut du formulaire
-document.addEventListener('DOMContentLoaded', function () {
-    const loadDefaultsBtn = document.getElementById('load-defaults-btn');
-
-    loadDefaultsBtn.addEventListener('click', function () {
-        const defaultValues = {
-            'nb_mots': 2,
-            'longueur_minimale': 12,
-            'separateur': 'random',
-            'majuscule_debut': true,
-            'majuscule_aleatoire': false,
-            'longueur_nombre': 2,
-            'caractere_special': 'random'
-        };
-        // Modifier les champs du formulaire avec les valeurs par défaut
-        document.getElementById('password_generation_form_nb_mots').value = defaultValues['nb_mots'];
-        document.getElementById('password_generation_form_longueur_minimale').value = defaultValues['longueur_minimale'];
-        document.getElementById('password_generation_form_separateur').value = defaultValues['separateur'];
-        document.getElementById('password_generation_form_majuscule_debut').checked = defaultValues['majuscule_debut'];
-        document.getElementById('password_generation_form_majuscule_aleatoire').checked = defaultValues['majuscule_aleatoire'];
-        document.getElementById('password_generation_form_longueur_nombre').value = defaultValues['longueur_nombre'];
-        document.getElementById('password_generation_form_caractere_special').value = defaultValues['caractere_special'];
-        document.getElementById('password_generation_form_caracteres_accentues').checked = true;
-    });
+    // --- Banner extension Chrome ---
+    const popup = document.getElementById('extension-popup');
+    if (popup) {
+        if (localStorage.getItem('extensionPopupClosed')) {
+            popup.style.display = 'none';
+        }
+        const closeBtn = document.getElementById('popup-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function () {
+                popup.style.display = 'none';
+                localStorage.setItem('extensionPopupClosed', 'true');
+            });
+        }
+    }
 });
-
-// Popup pour l'extension Chrome
-document.addEventListener("DOMContentLoaded", function () {
-    const popup = document.getElementById("extension-popup");
-  
-    if (!popup) return;
-  
-    const closeBtn = document.getElementById("popup-close");
-  
-    if (!localStorage.getItem("extensionPopupClosed")) {
-      popup.style.display = "flex";
-    } else {
-      popup.style.display = "none";
-    }
-  
-    if (closeBtn) {
-      closeBtn.addEventListener("click", function () {
-        popup.style.display = "none";
-        localStorage.setItem("extensionPopupClosed", "true");
-      });
-    }
-  });

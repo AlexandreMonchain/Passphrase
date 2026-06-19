@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
       args:
         GIT_REPO: ${GIT_REPO:-https://github.com/AlexandreMonchain/Passphrase.git}
-        GIT_BRANCH: ${GIT_BRANCH:-dev}
+        GIT_BRANCH: ${GIT_BRANCH:-main}
 
     container_name: passphrase-web
 
@@ -13,9 +13,8 @@ services:
       APP_ENV: prod
       APP_DEBUG: "0"
       APP_SECRET: ${APP_SECRET:?APP_SECRET is required}
-      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
 
     ports:
-      - "8000:80"
+      - "${PORT:-8000}:80"
 
     restart: unless-stopped

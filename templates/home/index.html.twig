@@ -188,33 +188,4 @@
         <button id="popup-close" class="popup-close-btn" aria-label="Fermer la notification">✕</button>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('password-generator-form');
-            const generateBtn = document.getElementById('generate-btn');
-            const loadingAnimation = document.getElementById('loading-animation');
-            const formMessages = document.getElementById('form-messages');
-
-            if (form) {
-                form.addEventListener('submit', function() {
-                    generateBtn.disabled = true;
-                    loadingAnimation.classList.remove('d-none');
-                    formMessages.innerHTML = '';
-                });
-            }
-
-            // Gestion du banner d'extension
-            const popupClose = document.getElementById('popup-close');
-            if (popupClose) {
-                popupClose.addEventListener('click', function() {
-                    document.getElementById('extension-popup').style.display = 'none';
-                    localStorage.setItem('extension-banner-closed', 'true');
-                });
-                
-                if (localStorage.getItem('extension-banner-closed')) {
-                    document.getElementById('extension-popup').style.display = 'none';
-                }
-            }
-        });
-    </script>
 {% endblock %}
