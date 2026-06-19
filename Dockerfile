@@ -1,4 +1,4 @@
-FROM php:8.2-apache-bookworm
+FROM php:8.4-apache-bookworm
 
 ENV COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_MEMORY_LIMIT=-1 \
