@@ -89,7 +89,7 @@
         </footer>
 
         <script defer src="{{ asset('assets/app.js') }}"></script>
-        <script defer src={{ asset('assets/bootstrap.min.js') }}></script>
+        <script defer src="{{ asset('assets/bootstrap.min.js') }}"></script>
         <script>
             function toggleNav() {
                 const menu = document.getElementById('navMenu');
@@ -103,5 +103,5 @@
             });
         </script>
         {% block script %}{% endblock %}
-    </footer>
+    </body>
 </html>
