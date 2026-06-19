@@ -34,8 +34,7 @@ RUN apt-get update \
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
 # Apache : pointer sur /app/public
-RUN sed -i 's|/var/www/html|/app/public|g' /etc/apache2/sites-available/000-default.conf \
-    && sed -i 's|/var/www/html|/app/public|g' /etc/apache2/apache2.conf
+COPY docker/apache.conf /etc/apache2/sites-available/000-default.conf
 
 # Clone du dépôt
 ARG GIT_REPO=https://github.com/AlexandreMonchain/Passphrase.git
