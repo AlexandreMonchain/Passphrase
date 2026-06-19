@@ -264,6 +264,7 @@ main.main-content { flex: 1; padding: 2rem 1rem; }
 .extension-banner-bottom .btn { white-space: nowrap; padding: 0.5rem 1rem !important; font-size: 0.875rem; }
 .popup-close-btn { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; padding: 0 0.5rem; line-height: 1; transition: transform 150ms ease; }
 .popup-close-btn:hover { transform: scale(1.2); }
+@media (max-width: 768px) { .extension-banner-bottom { display: none !important; } }
 
 /* ============================================ FOOTER ============================================ */
 .footer-modern { background: rgba(255, 255, 255, 0.70) !important; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-top: 1px solid rgba(255, 255, 255, 0.5) !important; margin-top: auto; padding: 2rem 1rem !important; box-shadow: 0 -4px 20px rgba(99, 102, 241, 0.06) !important; transition: background 300ms ease; }
