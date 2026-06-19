@@ -134,5 +134,3 @@ class PasswordGeneratorService
         return $str;
     }
 }
-
-?>

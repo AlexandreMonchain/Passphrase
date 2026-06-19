@@ -6,8 +6,6 @@ cd /app
 echo "🚀 Starting Passphrase..."
 
 mkdir -p var/cache var/log
-chown -R www-data:www-data var
-chmod -R ug+rwX var
 
 echo "🧹 Clearing Symfony cache..."
 
@@ -20,6 +18,9 @@ php bin/console cache:warmup \
     --env=prod \
     --no-debug \
     --no-interaction
+
+chown -R www-data:www-data var
+chmod -R ug+rwX var
 
 echo "✅ Services ready!"
 
