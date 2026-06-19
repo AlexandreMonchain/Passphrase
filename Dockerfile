@@ -1,50 +1,52 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.2-apache-bookworm
 
-RUN apk add --no-cache \
-    git \
-    curl \
-    nginx \
-    bash \
-    supervisor \
-    unzip \
-    zip \
-    su-exec \
-    icu-dev \
-    libxml2-dev \
-    libzip-dev \
-    oniguruma-dev \
-    sqlite-dev \
-    $PHPIZE_DEPS \
-    && docker-php-ext-install -j"$(nproc)" \
+ENV COMPOSER_ALLOW_SUPERUSER=1 \
+    COMPOSER_MEMORY_LIMIT=-1 \
+    APACHE_DOCUMENT_ROOT=/app/public \
+    APP_ENV=prod \
+    APP_DEBUG=0
+
+WORKDIR /app
+
+# Dépendances système + extensions PHP
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        git \
+        curl \
+        unzip \
+        libicu-dev \
+        libzip-dev \
+        libxml2-dev \
+        libonig-dev \
+        libsqlite3-dev \
+    && docker-php-ext-install \
         intl \
         mbstring \
         pdo_sqlite \
         pdo_mysql \
         xml \
         zip \
-        ctype
+        ctype \
+    && a2enmod rewrite \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-WORKDIR /app
+# Composer officiel
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
+# Apache : pointer sur /app/public
+RUN sed -i 's|/var/www/html|/app/public|g' /etc/apache2/sites-available/000-default.conf \
+    && sed -i 's|/var/www/html|/app/public|g' /etc/apache2/apache2.conf
+
+# Clone du dépôt
 ARG GIT_REPO=https://github.com/AlexandreMonchain/Passphrase.git
 ARG GIT_BRANCH=dev
 
-RUN echo "Cloning repository..." \
-    && git clone --branch "${GIT_BRANCH}" --depth 1 "${GIT_REPO}" . \
-    && git config --global --add safe.directory /app
+RUN git clone --branch "${GIT_BRANCH}" --depth 1 "${GIT_REPO}" .
 
-ENV COMPOSER_ALLOW_SUPERUSER=1
-ENV COMPOSER_MEMORY_LIMIT=-1
-ENV APP_ENV=prod
-ENV APP_DEBUG=0
+# .env minimal pour Symfony Runtime (les vraies valeurs viennent de Portainer)
+RUN printf 'APP_ENV=prod\nAPP_DEBUG=0\n' > /app/.env
 
-# Symfony Runtime exige actuellement la présence de /app/.env.
-# Les vraies valeurs sensibles seront fournies par Portainer.
-RUN if [ ! -f /app/.env ]; then \
-        printf 'APP_ENV=prod\nAPP_DEBUG=0\n' > /app/.env; \
-    fi
-
+# Dépendances Composer
 RUN composer install \
     --no-dev \
     --prefer-dist \
@@ -53,20 +55,18 @@ RUN composer install \
     --no-scripts \
     --no-progress
 
-RUN mkdir -p /app/var/cache /app/var/log \
-    && chown -R www-data:www-data /app/var \
+# Permissions
+RUN mkdir -p var/cache var/log \
+    && chown -R www-data:www-data /app \
     && chmod -R ug+rwX /app/var
 
-COPY docker/nginx.conf /etc/nginx/http.d/default.conf
-COPY docker/supervisord.conf /etc/supervisord.conf
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
-
-RUN chmod +x /usr/local/bin/entrypoint.sh \
-    && chown -R www-data:www-data /app
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 80
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
     CMD curl -fsS http://localhost/ || exit 1
 
-CMD ["/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["apache2-foreground"]

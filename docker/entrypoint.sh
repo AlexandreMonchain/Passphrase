@@ -23,4 +23,4 @@ su-exec www-data php bin/console cache:warmup \
 
 echo "✅ Services ready!"
 
-exec /usr/bin/supervisord -c /etc/supervisord.conf
+exec "$@"
