@@ -16,7 +16,7 @@ class PasswordGeneratorService
                 $passwordParts = [];
 
                 for ($j = 0; $j < $data['nb_mots']; $j++) {
-                    $mot = $mots[array_rand($mots)];
+                    $mot = $mots[random_int(0, count($mots) - 1)];
 
                     if ($data['majuscule_debut']) {
                         $mot = ucfirst($mot);
@@ -35,7 +35,7 @@ class PasswordGeneratorService
                 }
 
                 $separateur = $data['separateur'] === 'random'
-                    ? $this->separateurs[array_rand($this->separateurs)]
+                    ? $this->separateurs[random_int(0, count($this->separateurs) - 1)]
                     : $data['separateur'];
 
                 $password = implode($separateur, $passwordParts);
@@ -46,7 +46,7 @@ class PasswordGeneratorService
                 }
 
                 if ($data['caractere_special'] === 'random') {
-                    $password .= $this->caracteresSpeciaux[array_rand($this->caracteresSpeciaux)];
+                    $password .= $this->caracteresSpeciaux[random_int(0, count($this->caracteresSpeciaux) - 1)];
                 } elseif ($data['caractere_special'] !== 'none') {
                     $password .= $data['caractere_special'];
                 }
