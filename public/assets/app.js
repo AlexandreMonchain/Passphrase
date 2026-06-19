@@ -93,6 +93,23 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // --- Bouton thème clair / sombre ---
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        var updateThemeIcon = function (theme) {
+            themeToggle.innerHTML = theme === 'dark'
+                ? '<i class="fas fa-sun"></i>'
+                : '<i class="fas fa-moon"></i>';
+        };
+        updateThemeIcon(document.documentElement.getAttribute('data-theme') || 'light');
+        themeToggle.addEventListener('click', function () {
+            var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            updateThemeIcon(next);
+        });
+    }
+
     // --- Banner extension Chrome ---
     const popup = document.getElementById('extension-popup');
     if (popup) {

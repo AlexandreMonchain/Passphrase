@@ -32,6 +32,8 @@
             </script>
         <!-- END Google tag (gtag.js) -->
         <link rel="canonical" href="{{ app.request.scheme ~ '://' ~ app.request.host ~ app.request.pathInfo }}">
+        <!-- Theme: set immediately to avoid flash of wrong theme -->
+        <script>(function(){var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}());</script>
         <!-- Google Fonts: Inter -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -61,6 +63,9 @@
                     <a class="nav-link nav-extension" href="https://chromewebstore.google.com/detail/générateur-de-passphrase/bhlgfoknmmhgpfoanhoemjccephcanjd" target="_blank" rel="noopener" title="Extension Chrome">
                         <i class="fab fa-chrome"></i>
                     </a>
+                    <button id="theme-toggle" class="nav-theme-toggle" aria-label="Changer de thème" title="Thème clair / sombre">
+                        <i class="fas fa-moon"></i>
+                    </button>
                 </div>
             </div>
         </nav>
