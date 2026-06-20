@@ -32,6 +32,7 @@ COPY docker/apache.conf /etc/apache2/sites-available/000-default.conf
 
 ARG GIT_REPO=https://github.com/AlexandreMonchain/Passphrase.git
 ARG GIT_BRANCH=main
+ARG CACHE_BUST=1
 
 RUN git clone --branch "${GIT_BRANCH}" --depth 1 "${GIT_REPO}" .
 
