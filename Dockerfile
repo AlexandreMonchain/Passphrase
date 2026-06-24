@@ -23,7 +23,7 @@ RUN apt-get update \
         xml \
         zip \
         ctype \
-    && a2enmod rewrite \
+    && a2enmod rewrite headers \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
