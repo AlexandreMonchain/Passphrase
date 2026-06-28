@@ -66,6 +66,7 @@ APP_SECRET=votre_secret_ici docker compose up -d --build
 | `APP_SECRET` | ✅ | — | Clé secrète Symfony (sessions, CSRF). Chaîne aléatoire longue. |
 | `GIT_BRANCH` | | `main` | Branche GitHub à cloner au build |
 | `GIT_REPO` | | repo officiel | URL du dépôt (utile pour un fork) |
+| `CACHE_BUST` | | `1` | Incrémenter pour forcer un nouveau clone du code au build (invalide le cache Docker de l'étape `git clone`) |
 | `PORT` | | `8000` | Port exposé sur la machine hôte |
 | `TRUSTED_PROXIES` | | *(vide)* | IP(s) du reverse proxy. Nécessaire pour que Symfony détecte HTTPS derrière Traefik/Nginx/Caddy et que les cookies `Secure` fonctionnent correctement. Ex: `127.0.0.1` ou `REMOTE_ADDR` |
 
@@ -76,6 +77,9 @@ GIT_BRANCH=dev APP_SECRET=votre_secret_ici docker compose up -d --build
 
 # Utiliser un fork perso
 GIT_REPO=https://github.com/votreusername/Passphrase.git APP_SECRET=votre_secret_ici docker compose up -d --build
+
+# Récupérer la dernière version du code (force un nouveau clone)
+CACHE_BUST=2 APP_SECRET=votre_secret_ici docker compose up -d --build
 
 # Changer le port d'écoute (défaut: 8000)
 PORT=9000 APP_SECRET=votre_secret_ici docker compose up -d --build
