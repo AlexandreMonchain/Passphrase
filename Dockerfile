@@ -34,7 +34,9 @@ ARG GIT_REPO=https://github.com/AlexandreMonchain/Passphrase.git
 ARG GIT_BRANCH=main
 ARG CACHE_BUST=1
 
-RUN git clone --branch "${GIT_BRANCH}" --depth 1 "${GIT_REPO}" .
+# Référencer CACHE_BUST ici invalide la couche du clone quand on incrémente l'arg
+RUN echo "Cache bust: ${CACHE_BUST}" \
+    && git clone --branch "${GIT_BRANCH}" --depth 1 "${GIT_REPO}" .
 
 RUN printf 'APP_ENV=prod\nAPP_DEBUG=0\n' > /app/.env
 
